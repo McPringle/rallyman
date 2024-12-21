@@ -13,7 +13,7 @@ CREATE TABLE `event` (
     `name` VARCHAR(255) NOT NULL,
     `description` MEDIUMTEXT NOT NULL,
     `date` DATETIME NOT NULL,
-    `location` BIGINT NOT NULL,
+    `location_id` BIGINT NOT NULL,
     PRIMARY KEY (`id`)
 );
 
