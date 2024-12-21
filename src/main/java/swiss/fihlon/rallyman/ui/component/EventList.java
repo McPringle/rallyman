@@ -15,24 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package swiss.fihlon.rallyman.ui.view;
+package swiss.fihlon.rallyman.ui.component;
 
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.jetbrains.annotations.NotNull;
 import swiss.fihlon.rallyman.service.DatabaseService;
-import swiss.fihlon.rallyman.ui.component.EventList;
 
-@AnonymousAllowed
-@Route(value = "", layout = WebsiteLayout.class)
-public final class HomeView extends Div {
+public class EventList extends Div {
 
-    public HomeView(@NotNull final DatabaseService databaseService) {
-        setClassName("homeView");
-        add(new H1("Welcome to RallyMan"));
-        add(new EventList(databaseService));
+    public EventList(@NotNull final DatabaseService databaseService) {
+        setClassName("eventsOverview");
+        databaseService.getUpcomingEvents()
+                .map(EventSummary::new)
+                .forEach(this::add);
     }
 
 }
