@@ -20,12 +20,13 @@ package swiss.fihlon.rallyman.ui.view;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 
-@Route("")
+@AnonymousAllowed
+@Route(value = "", layout = WebsiteLayout.class)
 public final class HomeView extends Div {
 
     public HomeView() {
-        setId("home-view");
         add(new H1("Welcome to RallyMan"));
     }
 

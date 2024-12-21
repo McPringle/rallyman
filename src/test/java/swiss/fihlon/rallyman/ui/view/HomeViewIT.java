@@ -26,7 +26,7 @@ import static com.github.mvysny.kaributesting.v10.LocatorJ._assertOne;
 class HomeViewIT extends KaribuTest {
 
     @Test
-    @SuppressWarnings("java:S2699") // flase positiv: Karibu assertions are not recognized
+    @SuppressWarnings("java:S2699") // false positive: Karibu assertions are not recognized
     void socialWallContainsViews() {
         UI.getCurrent().navigate(HomeView.class);
         _assertOne(HomeView.class);
