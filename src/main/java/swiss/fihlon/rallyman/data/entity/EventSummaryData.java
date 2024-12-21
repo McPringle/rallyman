@@ -19,4 +19,4 @@ package swiss.fihlon.rallyman.data.entity;
 
 import java.time.LocalDateTime;
 
-public record EventSummaryData(Long id, String name, LocalDateTime date, String location) {}
+public record EventSummaryData(Long id, String name, LocalDateTime date, String location) { }
