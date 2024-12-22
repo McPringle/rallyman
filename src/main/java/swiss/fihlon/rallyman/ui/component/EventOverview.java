@@ -21,10 +21,10 @@ import com.vaadin.flow.component.html.Div;
 import org.jetbrains.annotations.NotNull;
 import swiss.fihlon.rallyman.service.DatabaseService;
 
-public class EventList extends Div {
+public class EventOverview extends Div {
 
-    public EventList(@NotNull final DatabaseService databaseService) {
-        setClassName("eventsOverview");
+    public EventOverview(@NotNull final DatabaseService databaseService) {
+        addClassName("event-overview");
         databaseService.getUpcomingEvents()
                 .map(EventSummary::new)
                 .forEach(this::add);

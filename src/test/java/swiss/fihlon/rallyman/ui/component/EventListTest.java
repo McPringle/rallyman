@@ -37,7 +37,7 @@ class EventListTest {
         when(databaseService.getUpcomingEvents())
                 .thenReturn(Stream.of(new EventSummaryData(42L, "Test Name", LocalDateTime.MAX, "Test Location")));
 
-        final var eventList = new EventList(databaseService);
+        final var eventList = new EventOverview(databaseService);
         assertEquals(1, eventList.getChildren().count());
         assertInstanceOf(EventSummary.class, eventList.getChildren().findFirst().orElseThrow());
     }

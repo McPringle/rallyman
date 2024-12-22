@@ -30,6 +30,7 @@ public final class WebsiteLayout extends VerticalLayout implements RouterLayout 
     private final Main main;
 
     public WebsiteLayout() {
+        addClassName("website-layout");
         this.main = new Main();
         add(main);
     }

@@ -23,16 +23,16 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.jetbrains.annotations.NotNull;
 import swiss.fihlon.rallyman.service.DatabaseService;
-import swiss.fihlon.rallyman.ui.component.EventList;
+import swiss.fihlon.rallyman.ui.component.EventOverview;
 
 @AnonymousAllowed
 @Route(value = "", layout = WebsiteLayout.class)
 public final class HomeView extends Div {
 
     public HomeView(@NotNull final DatabaseService databaseService) {
-        setClassName("homeView");
+        addClassName("home-view");
         add(new H1("Welcome to RallyMan"));
-        add(new EventList(databaseService));
+        add(new EventOverview(databaseService));
     }
 
 }

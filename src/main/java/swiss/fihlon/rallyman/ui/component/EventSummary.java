@@ -17,6 +17,7 @@
  */
 package swiss.fihlon.rallyman.ui.component;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
 import org.jetbrains.annotations.NotNull;
@@ -26,9 +27,16 @@ import swiss.fihlon.rallyman.util.FormatterUtil;
 public class EventSummary extends Div {
 
     public EventSummary(@NotNull final EventSummaryData eventSummaryData) {
-        add(new Div(new Text(eventSummaryData.name())));
-        add(new Div(new Text(FormatterUtil.formatDateTime(eventSummaryData.date()))));
-        add(new Div(new Text(eventSummaryData.location())));
+        addClassName("event-summary");
+        add(createDiv("event-name", new Text(eventSummaryData.name())));
+        add(createDiv("event-date", new Text(FormatterUtil.formatDateTime(eventSummaryData.date()))));
+        add(createDiv("event-location", new Text(eventSummaryData.location())));
+    }
+
+    private Component createDiv(@NotNull final String className, @NotNull final Component... components) {
+        final var div = new Div(components);
+        div.addClassName(className);
+        return div;
     }
 
 }
