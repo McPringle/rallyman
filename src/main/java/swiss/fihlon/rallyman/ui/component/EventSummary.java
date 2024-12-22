@@ -17,13 +17,14 @@
  */
 package swiss.fihlon.rallyman.ui.component;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import org.jetbrains.annotations.NotNull;
 import swiss.fihlon.rallyman.data.entity.EventSummaryData;
 import swiss.fihlon.rallyman.util.FormatterUtil;
+
+import static swiss.fihlon.rallyman.util.ComponentUtil.createDiv;
 
 public class EventSummary extends Div {
 
@@ -35,12 +36,6 @@ public class EventSummary extends Div {
         add(createDiv("event-location", new Text(eventSummaryData.location())));
 
         addClickListener(event -> UI.getCurrent().navigate("/event/" + eventSummaryData.id()));
-    }
-
-    private Component createDiv(@NotNull final String className, @NotNull final Component... components) {
-        final var div = new Div(components);
-        div.addClassName(className);
-        return div;
     }
 
 }

@@ -15,25 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package swiss.fihlon.rallyman.ui.component;
+package swiss.fihlon.rallyman.util;
 
-import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import org.jetbrains.annotations.NotNull;
-import swiss.fihlon.rallyman.data.entity.EventDetailData;
-import swiss.fihlon.rallyman.util.FormatterUtil;
 
-import static swiss.fihlon.rallyman.util.ComponentUtil.createDiv;
+public final class ComponentUtil {
 
-public class EventDetail extends Div {
+    public static Component createDiv(@NotNull final String className, @NotNull final Component... components) {
+        final var div = new Div(components);
+        div.addClassName(className);
+        return div;
+    }
 
-    public EventDetail(@NotNull final EventDetailData eventDetailData) {
-        addClassName("event-detail");
-
-        add(createDiv("event-name", new Text(eventDetailData.name())));
-        add(createDiv("event-description", new Text(eventDetailData.description())));
-        add(createDiv("event-date", new Text(FormatterUtil.formatDateTime(eventDetailData.date()))));
-        add(createDiv("event-location", new Text(eventDetailData.location())));
+    private ComponentUtil() {
+        throw new IllegalStateException("Utility class");
     }
 
 }
