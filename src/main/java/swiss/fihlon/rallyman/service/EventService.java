@@ -18,10 +18,12 @@
 package swiss.fihlon.rallyman.service;
 
 import org.jetbrains.annotations.NotNull;
+import swiss.fihlon.rallyman.data.entity.EventDetailData;
 import swiss.fihlon.rallyman.data.entity.EventSummaryData;
 import swiss.fihlon.rallyman.service.getter.DSLContextGetter;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static swiss.fihlon.rallyman.data.db.Tables.EVENT;
@@ -36,6 +38,14 @@ interface EventService extends DSLContextGetter {
                 .where(EVENT.DATE.ge(LocalDateTime.now()))
                 .orderBy(EVENT.DATE.asc())
                 .fetchStreamInto(EventSummaryData.class);
+    }
+
+    default @NotNull Optional<EventDetailData> getEvent(long id) {
+        return dsl().select(EVENT.ID, EVENT.NAME, EVENT.DESCRIPTION, EVENT.DATE, LOCATION.NAME)
+                .from(EVENT)
+                .leftJoin(LOCATION).on(EVENT.LOCATION_ID.eq(LOCATION.ID))
+                .where(EVENT.ID.eq(id))
+                .fetchOptionalInto(EventDetailData.class);
     }
 
 }

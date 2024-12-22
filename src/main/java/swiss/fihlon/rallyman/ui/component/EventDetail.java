@@ -19,22 +19,20 @@ package swiss.fihlon.rallyman.ui.component;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import org.jetbrains.annotations.NotNull;
-import swiss.fihlon.rallyman.data.entity.EventSummaryData;
+import swiss.fihlon.rallyman.data.entity.EventDetailData;
 import swiss.fihlon.rallyman.util.FormatterUtil;
 
-public class EventSummary extends Div {
+public class EventDetail extends Div {
 
-    public EventSummary(@NotNull final EventSummaryData eventSummaryData) {
-        addClassName("event-summary");
+    public EventDetail(@NotNull final EventDetailData eventDetailData) {
+        addClassName("event-detail");
 
-        add(createDiv("event-name", new Text(eventSummaryData.name())));
-        add(createDiv("event-date", new Text(FormatterUtil.formatDateTime(eventSummaryData.date()))));
-        add(createDiv("event-location", new Text(eventSummaryData.location())));
-
-        addClickListener(event -> UI.getCurrent().navigate("/event/" + eventSummaryData.id()));
+        add(createDiv("event-name", new Text(eventDetailData.name())));
+        add(createDiv("event-description", new Text(eventDetailData.description())));
+        add(createDiv("event-date", new Text(FormatterUtil.formatDateTime(eventDetailData.date()))));
+        add(createDiv("event-location", new Text(eventDetailData.location())));
     }
 
     private Component createDiv(@NotNull final String className, @NotNull final Component... components) {

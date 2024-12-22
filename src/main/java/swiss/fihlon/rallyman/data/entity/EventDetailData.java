@@ -15,21 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package swiss.fihlon.rallyman.ui.view;
+package swiss.fihlon.rallyman.data.entity;
 
-import com.vaadin.flow.component.UI;
-import org.junit.jupiter.api.Test;
-import swiss.fihlon.rallyman.ui.KaribuTest;
+import java.time.LocalDateTime;
 
-import static com.github.mvysny.kaributesting.v10.LocatorJ._assertOne;
-
-class HomeViewIT extends KaribuTest {
-
-    @Test
-    @SuppressWarnings("java:S2699") // false positive: Karibu assertions are not recognized
-    void socialWallContainsViews() {
-        UI.getCurrent().navigate(HomeView.class);
-        _assertOne(HomeView.class);
-    }
-
-}
+public record EventDetailData(Long id, String name, String description, LocalDateTime date, String location) { }

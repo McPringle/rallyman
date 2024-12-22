@@ -28,6 +28,10 @@ h1 {
     width: 20em;
 }
 
+.event-summary:hover {
+    background-color: lightgrey;
+}
+
 .event-name {
     font-weight: bold;
 }
