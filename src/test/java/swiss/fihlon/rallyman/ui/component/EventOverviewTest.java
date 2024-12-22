@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class EventListTest {
+class EventOverviewTest {
 
     @Test
     void happyCase() {
@@ -37,9 +37,9 @@ class EventListTest {
         when(databaseService.getUpcomingEvents())
                 .thenReturn(Stream.of(new EventSummaryData(42L, "Test Name", LocalDateTime.MAX, "Test Location")));
 
-        final var eventList = new EventOverview(databaseService);
-        assertEquals(1, eventList.getChildren().count());
-        assertInstanceOf(EventSummary.class, eventList.getChildren().findFirst().orElseThrow());
+        final var eventOverview = new EventOverview(databaseService);
+        assertEquals(1, eventOverview.getChildren().count());
+        assertInstanceOf(EventSummary.class, eventOverview.getChildren().findFirst().orElseThrow());
     }
 
 }
