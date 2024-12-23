@@ -17,10 +17,19 @@
  */
 package swiss.fihlon.rallyman.ui.component;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
 import org.jetbrains.annotations.NotNull;
+import software.xdev.vaadin.maps.leaflet.MapContainer;
+import software.xdev.vaadin.maps.leaflet.basictypes.LLatLng;
+import software.xdev.vaadin.maps.leaflet.layer.raster.LTileLayer;
+import software.xdev.vaadin.maps.leaflet.layer.ui.LMarker;
+import software.xdev.vaadin.maps.leaflet.map.LMap;
+import software.xdev.vaadin.maps.leaflet.registry.LComponentManagementRegistry;
+import software.xdev.vaadin.maps.leaflet.registry.LDefaultComponentManagementRegistry;
 import swiss.fihlon.rallyman.data.entity.EventDetailData;
+import swiss.fihlon.rallyman.data.entity.LocationData;
 import swiss.fihlon.rallyman.util.FormatterUtil;
 
 import static swiss.fihlon.rallyman.util.ComponentUtil.createDiv;
@@ -33,7 +42,24 @@ public class EventDetail extends Div {
         add(createDiv("event-name", new Text(eventDetailData.name())));
         add(createDiv("event-description", new Text(eventDetailData.description())));
         add(createDiv("event-date", new Text(FormatterUtil.formatDateTime(eventDetailData.date()))));
-        add(createDiv("event-location", new Text(eventDetailData.location())));
+        add(createDiv("event-location", new Text(eventDetailData.location().name())));
+        add(createDiv("event-map", createMap(eventDetailData.location())));
+    }
+
+    private Component createMap(@NotNull final LocationData locationData) {
+        final LComponentManagementRegistry reg = new LDefaultComponentManagementRegistry(this);
+        final MapContainer mapContainer = new MapContainer(reg);
+        mapContainer.setSizeFull();
+
+        final LMap map = mapContainer.getlMap();
+        map.addLayer(LTileLayer.createDefaultForOpenStreetMapTileServer(reg));
+        map.setView(new LLatLng(reg, locationData.latitude().doubleValue(), locationData.longitude().doubleValue()), 17);
+
+        new LMarker(reg, new LLatLng(reg, locationData.latitude().doubleValue(), locationData.longitude().doubleValue()))
+                .bindPopup(locationData.name())
+                .addTo(map);
+
+        return mapContainer;
     }
 
 }

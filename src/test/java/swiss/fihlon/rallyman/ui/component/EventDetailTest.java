@@ -19,8 +19,10 @@ package swiss.fihlon.rallyman.ui.component;
 
 import org.junit.jupiter.api.Test;
 import swiss.fihlon.rallyman.data.entity.EventDetailData;
+import swiss.fihlon.rallyman.data.entity.LocationData;
 import swiss.fihlon.rallyman.util.FormatterUtil;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,19 +31,15 @@ class EventDetailTest {
 
     @Test
     void happyCase() {
-        final Long id = 42L;
-        final String name = "Test Name";
-        final String description = "Test Description";
-        final LocalDateTime date = LocalDateTime.MAX;
-        final String location = "Test Location";
-
-        final var eventDetailData = new EventDetailData(id, name, description, date, location);
+        final var locationData = new LocationData(21L, "Foo City", BigDecimal.valueOf(1.2345), BigDecimal.valueOf(6.7890));
+        final var eventDetailData = new EventDetailData(42L, "Test Name", "Test Description",
+                LocalDateTime.now().plusYears(1), locationData);
 
         final var eventDetail = new EventDetail(eventDetailData);
-        assertEquals(name, eventDetail.getComponentAt(0).getElement().getText());
-        assertEquals(description, eventDetail.getComponentAt(1).getElement().getText());
-        assertEquals(FormatterUtil.formatDateTime(date), eventDetail.getComponentAt(2).getElement().getText());
-        assertEquals(location, eventDetail.getComponentAt(3).getElement().getText());
+        assertEquals(eventDetailData.name(), eventDetail.getComponentAt(0).getElement().getText());
+        assertEquals(eventDetailData.description(), eventDetail.getComponentAt(1).getElement().getText());
+        assertEquals(FormatterUtil.formatDateTime(eventDetailData.date()), eventDetail.getComponentAt(2).getElement().getText());
+        assertEquals(locationData.name(), eventDetail.getComponentAt(3).getElement().getText());
     }
 
 }

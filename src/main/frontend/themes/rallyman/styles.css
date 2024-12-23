@@ -35,3 +35,8 @@ h1 {
 .event-name {
     font-weight: bold;
 }
+
+.event-map {
+    width: 500px;
+    height: 500px;
+}

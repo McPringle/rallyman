@@ -17,6 +17,6 @@
  */
 package swiss.fihlon.rallyman.data.entity;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
-public record EventDetailData(Long id, String name, String description, LocalDateTime date, LocationData location) { }
+public record LocationData(Long id, String name, BigDecimal latitude, BigDecimal longitude) { }

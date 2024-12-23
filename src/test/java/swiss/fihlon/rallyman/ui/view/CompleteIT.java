@@ -114,6 +114,7 @@ class CompleteIT extends KaribuTest {
         assertEquals(FormatterUtil.formatDateTime(eventRecord.getDate()), eventDate.getText());
         final var eventLocation = _get(Div.class, spec -> spec.withClasses("event-location"));
         assertEquals(locationRecord.getName(), eventLocation.getText());
+        _assertOne(Div.class, spec -> spec.withClasses("event-map"));
     }
 
 }

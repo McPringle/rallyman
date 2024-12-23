@@ -18,8 +18,10 @@
 package swiss.fihlon.rallyman.service;
 
 import org.jetbrains.annotations.NotNull;
+import org.jooq.exception.NoDataFoundException;
 import swiss.fihlon.rallyman.data.entity.EventDetailData;
 import swiss.fihlon.rallyman.data.entity.EventSummaryData;
+import swiss.fihlon.rallyman.data.entity.LocationData;
 import swiss.fihlon.rallyman.service.getter.DSLContextGetter;
 
 import java.time.LocalDateTime;
@@ -41,11 +43,22 @@ interface EventService extends DSLContextGetter {
     }
 
     default @NotNull Optional<EventDetailData> getEvent(long id) {
-        return dsl().select(EVENT.ID, EVENT.NAME, EVENT.DESCRIPTION, EVENT.DATE, LOCATION.NAME)
-                .from(EVENT)
-                .leftJoin(LOCATION).on(EVENT.LOCATION_ID.eq(LOCATION.ID))
-                .where(EVENT.ID.eq(id))
-                .fetchOptionalInto(EventDetailData.class);
+        try {
+            final var recordData = dsl().select(EVENT.ID, EVENT.NAME, EVENT.DESCRIPTION, EVENT.DATE,
+                            LOCATION.ID, LOCATION.NAME, LOCATION.LATITUDE, LOCATION.LONGITUDE)
+                    .from(EVENT)
+                    .leftJoin(LOCATION).on(EVENT.LOCATION_ID.eq(LOCATION.ID))
+                    .where(EVENT.ID.eq(id))
+                    .fetchSingle();
+            final var locationData = new LocationData(
+                    recordData.get(LOCATION.ID), recordData.get(LOCATION.NAME),
+                    recordData.get(LOCATION.LATITUDE), recordData.get(LOCATION.LONGITUDE));
+            return Optional.of(new EventDetailData(
+                    recordData.get(EVENT.ID), recordData.get(EVENT.NAME), recordData.get(EVENT.DESCRIPTION), recordData.get(EVENT.DATE),
+                    locationData));
+        } catch (@NotNull final NoDataFoundException e) {
+            return Optional.empty();
+        }
     }
 
 }
