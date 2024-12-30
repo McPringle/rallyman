@@ -19,25 +19,40 @@ package swiss.fihlon.rallyman.service;
 
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
+import org.springframework.mail.MailSender;
 import org.springframework.stereotype.Service;
+import swiss.fihlon.rallyman.configuration.AppConfig;
+import swiss.fihlon.rallyman.service.getter.ConfigurationGetter;
 import swiss.fihlon.rallyman.service.getter.DSLContextGetter;
 
 @Service
-public class DatabaseService implements DSLContextGetter, EventService {
+public final class DatabaseService implements ConfigurationGetter, DSLContextGetter, EventService, MailService, MailTemplateService {
 
-    private final DSLContext dsl;
+    private final @NotNull AppConfig appConfig;
+    private final @NotNull DSLContext dsl;
+    private final @NotNull MailSender mailSender;
 
-    public DatabaseService(@NotNull final DSLContext dsl) {
+    public DatabaseService(@NotNull final AppConfig appConfig,
+                           @NotNull final DSLContext dsl,
+                           @NotNull final MailSender mailSender) {
+        this.appConfig = appConfig;
         this.dsl = dsl;
+        this.mailSender = mailSender;
     }
 
-    /**
-     * Get the {@link DSLContext} to access the database.
-     * @return the {@link DSLContext}
-     */
+    @Override
+    public AppConfig appConfig() {
+        return appConfig;
+    }
+
     @Override
     public DSLContext dsl() {
         return dsl;
+    }
+
+    @Override
+    public MailSender mailSender() {
+        return mailSender;
     }
 
 }

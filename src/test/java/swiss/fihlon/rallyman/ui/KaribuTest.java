@@ -20,11 +20,16 @@ package swiss.fihlon.rallyman.ui;
 import com.github.mvysny.kaributesting.v10.MockVaadin;
 import com.github.mvysny.kaributesting.v10.Routes;
 import com.github.mvysny.kaributesting.v10.spring.MockSpringServlet;
+import com.icegreen.greenmail.configuration.GreenMailConfiguration;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
+import com.icegreen.greenmail.store.FolderException;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import com.vaadin.flow.component.UI;
 import kotlin.jvm.functions.Function0;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
@@ -39,6 +44,12 @@ import org.springframework.test.annotation.DirtiesContext;
 @DirtiesContext
 public abstract class KaribuTest {
 
+    @RegisterExtension
+    protected static final GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
+            .withConfiguration(GreenMailConfiguration.aConfig()
+                    .withUser("rallyman", "s3cr3t"))
+            .withPerMethodLifecycle(false);
+
     private static Routes routes;
 
     @BeforeAll
@@ -49,19 +60,14 @@ public abstract class KaribuTest {
     @Autowired
     private ApplicationContext applicationContext;
 
-    /**
-     * @see org.junit.jupiter.api.BeforeEach
-     */
     @BeforeEach
-    public void setup() {
+    public void setup() throws FolderException {
         final Function0<UI> uiFactory = UI::new;
         final var servlet = new MockSpringServlet(routes, applicationContext, uiFactory);
         MockVaadin.setup(uiFactory, servlet);
+        greenMail.purgeEmailFromAllMailboxes();
     }
 
-    /**
-     * @see org.junit.jupiter.api.AfterEach
-     */
     @AfterEach
     public void tearDown() {
         MockVaadin.tearDown();

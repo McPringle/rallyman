@@ -15,25 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package swiss.fihlon.rallyman.configuration;
+package swiss.fihlon.rallyman.service;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.jetbrains.annotations.NotNull;
+import swiss.fihlon.rallyman.data.db.tables.records.MailTemplateRecord;
+import swiss.fihlon.rallyman.data.entity.MailTemplateId;
+import swiss.fihlon.rallyman.service.getter.DSLContextGetter;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.Optional;
 
-@SpringBootTest
-class AppConfigTest {
+import static swiss.fihlon.rallyman.data.db.Tables.MAIL_TEMPLATE;
 
-    @Autowired
-    private AppConfig appConfig;
+public interface MailTemplateService extends DSLContextGetter {
 
-    @Test
-    void testConfiguration() {
-        assertNotNull(appConfig);
-        assertFalse(appConfig.version().isBlank());
+    default Optional<MailTemplateRecord> getMailTemplate(@NotNull final MailTemplateId mailTemplateId) {
+        return dsl().selectFrom(MAIL_TEMPLATE)
+                .where(MAIL_TEMPLATE.ID.eq(mailTemplateId.name()))
+                .fetchOptional();
     }
 
 }

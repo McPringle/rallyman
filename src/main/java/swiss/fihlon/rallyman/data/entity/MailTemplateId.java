@@ -15,18 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package swiss.fihlon.rallyman.configuration;
+package swiss.fihlon.rallyman.data.entity;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.ConstructorBinding;
-
-@ConfigurationProperties(prefix = "rallyman")
-public record AppConfig(String version,
-                        String defaultMailFromAddress) {
-
-    @ConstructorBinding
-    @SuppressWarnings({"java:S1186", "java:S6207"})
-    // needed to add the `@ConstructorBinding` annotation
-    public AppConfig { }
-
+public enum MailTemplateId {
+    TEST
 }
