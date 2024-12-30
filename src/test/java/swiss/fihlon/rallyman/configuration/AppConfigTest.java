@@ -17,24 +17,23 @@
  */
 package swiss.fihlon.rallyman.configuration;
 
-import org.jetbrains.annotations.NotNull;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@org.springframework.context.annotation.Configuration
-@ConfigurationProperties(prefix = "rallyman")
-@EnableConfigurationProperties
-@SuppressWarnings("checkstyle:DesignForExtension") // Spring configurations can be subclassed by the Spring Framework
-public class Configuration {
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-    private String version;
+@SpringBootTest
+class AppConfigTest {
 
-    public String getVersion() {
-        return version;
-    }
+    @Autowired
+    private AppConfig appConfig;
 
-    public void setVersion(@NotNull final String version) {
-        this.version = version;
+    @Test
+    void testConfiguration() {
+        assertNotNull(appConfig);
+        assertFalse(appConfig.version().isBlank());
     }
 
 }

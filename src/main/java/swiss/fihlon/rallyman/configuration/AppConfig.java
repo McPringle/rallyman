@@ -17,23 +17,15 @@
  */
 package swiss.fihlon.rallyman.configuration;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+@ConfigurationProperties(prefix = "rallyman")
+public record AppConfig(String version) {
 
-@SpringBootTest
-class ConfigurationTest {
-
-    @Autowired
-    private Configuration configuration;
-
-    @Test
-    void testConfiguration() {
-        assertNotNull(configuration);
-        assertFalse(configuration.getVersion().isBlank());
-    }
+    @ConstructorBinding
+    @SuppressWarnings({"java:S1186", "java:S6207"})
+    // needed to add the `@ConstructorBinding` annotation
+    public AppConfig { }
 
 }

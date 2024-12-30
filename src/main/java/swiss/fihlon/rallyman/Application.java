@@ -25,7 +25,9 @@ import com.vaadin.flow.theme.Theme;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import swiss.fihlon.rallyman.configuration.AppConfig;
 
 /**
  * <p>The entry point of the Spring Boot application.</p>
@@ -35,6 +37,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @SpringBootApplication
 @EnableScheduling
+@EnableConfigurationProperties(AppConfig.class)
 @Push
 @PageTitle("RallyMan - Organizing rallies as easily as possible")
 @PWA(name = "RallyMan", shortName = "RallyMan")
