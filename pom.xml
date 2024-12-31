@@ -364,7 +364,7 @@
                             <goal>analyze-only</goal>
                         </goals>
                         <configuration>
-                            <!-- set to true later when all warnings are fixed -->
+                            <!-- TODO set to true later when all warnings are fixed -->
                             <failOnWarning>false</failOnWarning>
                         </configuration>
                     </execution>
