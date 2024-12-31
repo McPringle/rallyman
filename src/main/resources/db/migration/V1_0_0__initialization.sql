@@ -31,3 +31,11 @@ CREATE TABLE `mail_template` (
 INSERT INTO mail_template (id, subject, content)
 VALUES ('TEST','This is a test','The template variable "foobar" was set to "${foobar}".');
 -- [jooq ignore stop]
+
+CREATE TABLE `user` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `email` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+CREATE UNIQUE INDEX `user_email` ON `user` (`email`);
