@@ -1,8 +1,8 @@
 CREATE TABLE `location` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
-    `latitude` DECIMAL(9,6) NOT NULL,
-    `longitude` DECIMAL(9,6) NOT NULL,
+    `latitude` DECIMAL(7,4) NOT NULL,
+    `longitude` DECIMAL(7,4) NOT NULL,
     PRIMARY KEY (`id`)
 );
 
