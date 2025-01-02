@@ -26,7 +26,7 @@ import swiss.fihlon.rallyman.service.getter.ConfigurationGetter;
 import swiss.fihlon.rallyman.service.getter.DSLContextGetter;
 
 @Service
-public final class DatabaseService implements ConfigurationGetter, DSLContextGetter, EventService, MailService, MailTemplateService {
+public final class DatabaseService implements ConfigurationGetter, DSLContextGetter, EventService, MailService, MailTemplateService, UserService {
 
     private final @NotNull AppConfig appConfig;
     private final @NotNull DSLContext dsl;

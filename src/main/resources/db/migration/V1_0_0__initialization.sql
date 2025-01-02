@@ -35,6 +35,7 @@ VALUES ('TEST','This is a test','The template variable "foobar" was set to "${fo
 CREATE TABLE `user` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(255) NOT NULL,
+    `password_hash` VARCHAR(255) NULL,
     PRIMARY KEY (`id`)
 );
 
