@@ -33,7 +33,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import swiss.fihlon.rallyman.configuration.AppConfig;
-import swiss.fihlon.rallyman.security.PasswordService;
+import swiss.fihlon.rallyman.security.SecurityConfiguration;
 
 /**
  * <p>The entry point of the Spring Boot application.</p>
@@ -61,9 +61,8 @@ public class Application implements AppShellConfigurator {
 
         final var cmd = new DefaultParser().parse(options, args);
         if (cmd.hasOption(HASH_PASSWORD_OPTION)) {
-            final var passwordUtil = new PasswordService();
             final var password = cmd.getOptionValue(HASH_PASSWORD_OPTION);
-            final var hashedPassword = passwordUtil.encode(password);
+            final var hashedPassword = SecurityConfiguration.PASSWORD_ENCODER.encode(password);
             System.out.println("Hashed password: " + hashedPassword);
         } else if (cmd.hasOption(HELP_OPTION)) {
             final var helpFormatter = new HelpFormatter();
