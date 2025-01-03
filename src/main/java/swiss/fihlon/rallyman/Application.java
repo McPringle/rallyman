@@ -22,12 +22,18 @@ import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import swiss.fihlon.rallyman.configuration.AppConfig;
+import swiss.fihlon.rallyman.security.PasswordService;
 
 /**
  * <p>The entry point of the Spring Boot application.</p>
@@ -42,11 +48,29 @@ import swiss.fihlon.rallyman.configuration.AppConfig;
 @PageTitle("RallyMan - Organizing rallies as easily as possible")
 @PWA(name = "RallyMan", shortName = "RallyMan")
 @Theme("rallyman")
-@SuppressWarnings({"FinalClass", "HideUtilityClassConstructor"})
+@SuppressWarnings({"FinalClass", "HideUtilityClassConstructor", "RegexpSingleline", "java:S106"})
 public class Application implements AppShellConfigurator {
 
-    public static void main(@NotNull final String[] args) {
-        SpringApplication.run(Application.class, args);
+    private static final Option HASH_PASSWORD_OPTION = new Option("p", "password", true, "Hash password and exit");
+    private static final Option HELP_OPTION = new Option("h", "help", false, "Show help and exit");
+
+    public static void main(@NotNull final String[] args) throws ParseException {
+        final var options = new Options();
+        options.addOption(HASH_PASSWORD_OPTION);
+        options.addOption(HELP_OPTION);
+
+        final var cmd = new DefaultParser().parse(options, args);
+        if (cmd.hasOption(HASH_PASSWORD_OPTION)) {
+            final var passwordUtil = new PasswordService();
+            final var password = cmd.getOptionValue(HASH_PASSWORD_OPTION);
+            final var hashedPassword = passwordUtil.encode(password);
+            System.out.println("Hashed password: " + hashedPassword);
+        } else if (cmd.hasOption(HELP_OPTION)) {
+            final var helpFormatter = new HelpFormatter();
+            helpFormatter.printHelp("java -jar apus.jar", options, true);
+        } else {
+            SpringApplication.run(Application.class, args);
+        }
     }
 
 }

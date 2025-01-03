@@ -17,6 +17,7 @@
  */
 package swiss.fihlon.rallyman;
 
+import org.apache.commons.cli.ParseException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import org.springframework.boot.SpringApplication;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 
@@ -45,7 +47,7 @@ class ApplicationTest {
     }
 
     @Test
-    void testMainCallsSpring() {
+    void testMainCallsSpring() throws ParseException {
         final String[] args = new String[2];
         args[0] = "foo";
         args[1] = "bar";
@@ -60,4 +62,45 @@ class ApplicationTest {
                     times(1));
         }
     }
+
+    @Test
+    void testShortPasswordOption() throws ParseException {
+        final String[] args = new String[] { "-p", "12345" };
+        Application.main(args);
+
+        final String out = outputStreamCaptor.toString();
+        assertTrue(out.contains("Hashed password:"));
+    }
+
+    @Test
+    void testLongPasswordOption() throws ParseException {
+        final String[] args = new String[] { "--password", "12345" };
+        Application.main(args);
+
+        final String out = outputStreamCaptor.toString();
+        assertTrue(out.contains("Hashed password:"));
+    }
+
+    @Test
+    void testShortHelpOption() throws ParseException {
+        final String[] args = new String[] { "-h" };
+        Application.main(args);
+
+        final String out = outputStreamCaptor.toString();
+        assertTrue(out.startsWith("usage:"));
+        assertTrue(out.contains("Show help and exit"));
+        assertTrue(out.contains("Hash password and exit"));
+    }
+
+    @Test
+    void testLongHelpOption() throws ParseException {
+        final String[] args = new String[] { "--help" };
+        Application.main(args);
+
+        final String out = outputStreamCaptor.toString();
+        assertTrue(out.startsWith("usage:"));
+        assertTrue(out.contains("Show help and exit"));
+        assertTrue(out.contains("Hash password and exit"));
+    }
+
 }
