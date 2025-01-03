@@ -17,6 +17,7 @@
  */
 package swiss.fihlon.rallyman.ui;
 
+import com.github.mvysny.fakeservlet.FakeRequest;
 import com.github.mvysny.kaributesting.v10.MockVaadin;
 import com.github.mvysny.kaributesting.v10.Routes;
 import com.github.mvysny.kaributesting.v10.spring.MockSpringServlet;
@@ -25,7 +26,9 @@ import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.server.VaadinServletRequest;
 import kotlin.jvm.functions.Function0;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +36,13 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
+import swiss.fihlon.rallyman.data.entity.Role;
+
+import java.util.List;
 
 /**
  * An abstract class which sets up Spring, Karibu-Testing and your app.
@@ -71,6 +80,23 @@ public abstract class KaribuTest {
     @AfterEach
     public void tearDown() {
         MockVaadin.tearDown();
+    }
+
+    protected void login(@NotNull final String user, @NotNull final String password, @NotNull final List<Role> roles) {
+        // taken from https://www.baeldung.com/manually-set-user-authentication-spring-security
+        // also see https://github.com/mvysny/karibu-testing/issues/47 for more details.
+        final var authorities = roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                .toList();
+        final var authenticationToken = new UsernamePasswordAuthenticationToken(user, password, authorities);
+        final var securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authenticationToken);
+
+        // however, you also need to make sure that ViewAccessChecker works properly;
+        // that requires a correct FakeRequest.userPrincipal and FakeRequest.isUserInRole()
+        final var request = (FakeRequest) VaadinServletRequest.getCurrent().getRequest();
+        request.setUserPrincipalInt(authenticationToken);
+        request.setUserInRole((principal, role) -> roles.contains(Role.valueOf(role)));
     }
 
 }
