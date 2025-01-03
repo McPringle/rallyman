@@ -35,20 +35,30 @@ class LoginIT extends KaribuTest {
 
     @Test
     void loginAndLogout() {
+
+        // not logged in: call to profile page forwards to login page
         UI.getCurrent().navigate(ProfileView.class);
         UI.getCurrent().getPage().reload();
         _assertOne(LoginView.class);
         _assertOne(LoginForm.class);
 
+        // do a fake login
         login(TestUser.EMAIL, TestUser.PASSWORD, List.of(Role.USER));
 
+        // logged in: call to profile page shows welcome
         UI.getCurrent().navigate(ProfileView.class);
         UI.getCurrent().getPage().reload();
         _assertOne(ProfileView.class);
         assertEquals("Welcome " + TestUser.EMAIL, _get(H1.class).getText());
 
+        // navigate to logout
+        UI.getCurrent().navigate(LogoutView.class);
+        _assertOne(LogoutView.class);
+
+        // do a fake logout
         logout();
 
+        // not logged in: call to profile page forwards to login page
         UI.getCurrent().navigate(ProfileView.class);
         UI.getCurrent().getPage().reload();
         _assertOne(LoginView.class);
