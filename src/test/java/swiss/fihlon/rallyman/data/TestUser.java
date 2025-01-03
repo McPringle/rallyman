@@ -21,5 +21,6 @@ public interface TestUser {
 
     String EMAIL = "test@localhost";
     String PASSWORD = "testPassword12345";
+    String PASSWORD_HASH = "$2a$10$o/h.m6vETYxnskJfz.65wuBkXNRQ102AR.Bs1Jr8l3XirCxabJbJa";
 
 }
