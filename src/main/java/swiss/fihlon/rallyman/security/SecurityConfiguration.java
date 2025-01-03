@@ -24,11 +24,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import swiss.fihlon.rallyman.ui.view.LoginView;
-
-import java.security.SecureRandom;
 
 @Configuration
 @EnableWebSecurity
@@ -36,8 +33,12 @@ import java.security.SecureRandom;
 public class SecurityConfiguration extends VaadinWebSecurity {
 
     public static final @NotNull String LOGOUT_URL = "/";
-    public static final @NotNull PasswordEncoder PASSWORD_ENCODER =
-            new BCryptPasswordEncoder(10, new SecureRandom());
+
+    private final @NotNull PasswordService passwordService;
+
+    public SecurityConfiguration(@NotNull final PasswordService passwordService) {
+        this.passwordService = passwordService;
+    }
 
     @Override
     protected void configure(@NotNull final HttpSecurity http) throws Exception {
@@ -74,7 +75,7 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PASSWORD_ENCODER;
+        return passwordService;
     }
 
 }
