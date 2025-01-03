@@ -46,6 +46,13 @@ class LoginIT extends KaribuTest {
         UI.getCurrent().getPage().reload();
         _assertOne(ProfileView.class);
         assertEquals("Welcome " + TestUser.EMAIL, _get(H1.class).getText());
+
+        logout();
+
+        UI.getCurrent().navigate(ProfileView.class);
+        UI.getCurrent().getPage().reload();
+        _assertOne(LoginView.class);
+        _assertOne(LoginForm.class);
     }
 
 }

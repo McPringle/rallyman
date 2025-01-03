@@ -35,13 +35,14 @@ import java.security.SecureRandom;
 @SuppressWarnings("checkstyle:DesignForExtension") // Spring configurations can be subclassed by the Spring Framework
 public class SecurityConfiguration extends VaadinWebSecurity {
 
-    @NotNull
-    public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(10, new SecureRandom());
+    public static final @NotNull String LOGOUT_URL = "/";
+    public static final @NotNull PasswordEncoder PASSWORD_ENCODER =
+            new BCryptPasswordEncoder(10, new SecureRandom());
 
     @Override
     protected void configure(@NotNull final HttpSecurity http) throws Exception {
         super.configure(http);
-        setLoginView(http, LoginView.class, "/");
+        setLoginView(http, LoginView.class, LOGOUT_URL);
     }
 
     @Override

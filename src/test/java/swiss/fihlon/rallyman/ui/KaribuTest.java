@@ -99,4 +99,14 @@ public abstract class KaribuTest {
         request.setUserInRole((principal, role) -> roles.contains(Role.valueOf(role)));
     }
 
+    @AfterEach
+    protected void logout() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+        if (VaadinServletRequest.getCurrent() != null) {
+            final var request = (FakeRequest) VaadinServletRequest.getCurrent().getRequest();
+            request.setUserPrincipalInt(null);
+            request.setUserInRole((principal, role) -> false);
+        }
+    }
+
 }

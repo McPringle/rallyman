@@ -17,10 +17,13 @@
  */
 package swiss.fihlon.rallyman.security;
 
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.server.VaadinServletRequest;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Component;
 import swiss.fihlon.rallyman.data.entity.UserData;
 import swiss.fihlon.rallyman.service.DatabaseService;
@@ -49,6 +52,16 @@ public final class AuthenticatedUser {
 
     public UserData orElseThrow() {
         return get().orElseThrow();
+    }
+
+    public void logout() {
+        logout(SecurityConfiguration.LOGOUT_URL);
+    }
+
+    public void logout(@NotNull final String location) {
+        UI.getCurrent().getPage().setLocation(location);
+        final var logoutHandler = new SecurityContextLogoutHandler();
+        logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(), null, null);
     }
 
 }
