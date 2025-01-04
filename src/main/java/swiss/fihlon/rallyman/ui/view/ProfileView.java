@@ -19,8 +19,8 @@ package swiss.fihlon.rallyman.ui.view;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +28,7 @@ import swiss.fihlon.rallyman.security.AuthenticatedUser;
 
 @PermitAll
 @Route(value = "profile", layout = WebsiteLayout.class)
-public final class ProfileView extends Div {
+public final class ProfileView extends VerticalLayout {
 
     public ProfileView(@NotNull final AuthenticatedUser authenticatedUser) {
         final var userData = authenticatedUser.orElseThrow();
