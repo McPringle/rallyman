@@ -17,4 +17,4 @@
  */
 package swiss.fihlon.rallyman.data.entity;
 
-public record UserData(Long id, String email, String passwordHash) { }
+public record UserData(Long id, String email, String passwordHash, String name) { }

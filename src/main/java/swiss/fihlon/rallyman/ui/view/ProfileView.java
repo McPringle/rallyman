@@ -33,7 +33,7 @@ public final class ProfileView extends Div {
     public ProfileView(@NotNull final AuthenticatedUser authenticatedUser) {
         final var userData = authenticatedUser.orElseThrow();
         addClassName("profile-view");
-        add(new H1("Welcome " + userData.email()));
+        add(new H1("Welcome " + userData.name()));
         add(new Button("Logout", event -> UI.getCurrent().navigate(LogoutView.class)));
     }
 

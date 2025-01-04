@@ -36,6 +36,7 @@ CREATE TABLE `user` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(255) NOT NULL,
     `password_hash` VARCHAR(255) NULL,
+    `name` VARCHAR(255) NOT NULL DEFAULT '',
     PRIMARY KEY (`id`)
 );
 
