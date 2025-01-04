@@ -17,6 +17,8 @@
  */
 package swiss.fihlon.rallyman.ui.view;
 
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.router.Route;
@@ -32,6 +34,7 @@ public final class ProfileView extends Div {
         final var userData = authenticatedUser.orElseThrow();
         addClassName("profile-view");
         add(new H1("Welcome " + userData.email()));
+        add(new Button("Logout", event -> UI.getCurrent().navigate(LogoutView.class)));
     }
 
 }

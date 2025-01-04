@@ -18,6 +18,7 @@
 package swiss.fihlon.rallyman.ui.view;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ import swiss.fihlon.rallyman.ui.KaribuTest;
 import java.util.List;
 
 import static com.github.mvysny.kaributesting.v10.LocatorJ._assertOne;
+import static com.github.mvysny.kaributesting.v10.LocatorJ._click;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -49,10 +51,12 @@ class LoginIT extends KaribuTest {
         UI.getCurrent().navigate(ProfileView.class);
         UI.getCurrent().getPage().reload();
         _assertOne(ProfileView.class);
-        assertEquals("Welcome " + TestUser.EMAIL, _get(H1.class).getText());
+        _assertOne(H1.class, spec -> spec.withText("Welcome " + TestUser.EMAIL));
 
         // navigate to logout
-        UI.getCurrent().navigate(LogoutView.class);
+        final var logoutButton = _get(Button.class, spec -> spec.withText("Logout"));
+        _click(logoutButton);
+        // UI.getCurrent().navigate(LogoutView.class);
         _assertOne(LogoutView.class);
 
         // do a fake logout
