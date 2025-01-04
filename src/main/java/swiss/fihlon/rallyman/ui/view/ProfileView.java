@@ -17,14 +17,18 @@
  */
 package swiss.fihlon.rallyman.ui.view;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.jetbrains.annotations.NotNull;
+import swiss.fihlon.rallyman.data.entity.UserData;
 import swiss.fihlon.rallyman.security.AuthenticatedUser;
+import swiss.fihlon.rallyman.util.GravatarUtil;
 
 @PermitAll
 @Route(value = "profile", layout = WebsiteLayout.class)
@@ -34,7 +38,14 @@ public final class ProfileView extends VerticalLayout {
         final var userData = authenticatedUser.orElseThrow();
         addClassName("profile-view");
         add(new H1("Welcome " + userData.name()));
+        add(createAvatar(userData));
         add(new Button("Logout", event -> UI.getCurrent().navigate(LogoutView.class)));
+    }
+
+    private Component createAvatar(@NotNull final UserData userData) {
+        final var avatar = new Avatar(userData.name());
+        avatar.setImage(GravatarUtil.getGravatarAddress(userData.email()));
+        return avatar;
     }
 
 }
