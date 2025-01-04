@@ -18,8 +18,11 @@
 package swiss.fihlon.rallyman.ui.view;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.login.LoginForm;
+import com.vaadin.flow.component.html.H1;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import swiss.fihlon.rallyman.data.TestUser;
 import swiss.fihlon.rallyman.data.entity.Role;
@@ -28,42 +31,27 @@ import swiss.fihlon.rallyman.ui.KaribuTest;
 import java.util.List;
 
 import static com.github.mvysny.kaributesting.v10.LocatorJ._assertOne;
-import static com.github.mvysny.kaributesting.v10.LocatorJ._click;
-import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
 
-class LoginIT extends KaribuTest {
+class ProfileIT extends KaribuTest {
+
+    @BeforeEach
+    void beforeEach() {
+        login(TestUser.EMAIL, TestUser.PASSWORD, List.of(Role.USER));
+    }
+
+    @AfterEach
+    void afterEach() {
+        logout();
+    }
 
     @Test
     @SuppressWarnings("java:S2699") // false positive: Karibu assertions are not recognized
-    void loginAndLogout() {
-
-        // not logged in: call to profile page forwards to login page
+    void profileView() {
         UI.getCurrent().navigate(ProfileView.class);
-        UI.getCurrent().getPage().reload();
-        _assertOne(LoginView.class);
-        _assertOne(LoginForm.class);
-
-        // do a fake login
-        login(TestUser.EMAIL, TestUser.PASSWORD, List.of(Role.USER));
-
-        // logged in: profile page is accessible
-        UI.getCurrent().navigate(ProfileView.class);
-        UI.getCurrent().getPage().reload();
         _assertOne(ProfileView.class);
-
-        // navigate to logout
-        final var logoutButton = _get(Button.class, spec -> spec.withText("Logout"));
-        _click(logoutButton);
-        _assertOne(LogoutView.class);
-
-        // do a fake logout
-        logout();
-
-        // not logged in: call to profile page forwards to login page again
-        UI.getCurrent().navigate(ProfileView.class);
-        UI.getCurrent().getPage().reload();
-        _assertOne(LoginView.class);
-        _assertOne(LoginForm.class);
+        _assertOne(H1.class, spec -> spec.withText("Welcome " + TestUser.NAME));
+        _assertOne(Avatar.class);
+        _assertOne(Button.class, spec -> spec.withText("Logout"));
     }
 
 }
