@@ -37,7 +37,7 @@ class SecurityServiceTest {
     void loadUserByUsernameSuccess() {
         final var databaseService = mock(DatabaseService.class);
         when(databaseService.getUserByEmail(TestUser.EMAIL)).thenReturn(
-                Optional.of(new UserData(1L, TestUser.EMAIL, TestUser.PASSWORD_HASH, TestUser.NAME)));
+                Optional.of(new UserData(1L, TestUser.EMAIL, TestUser.PASSWORD_HASH, TestUser.NAME, TestUser.LAST_LOGIN)));
 
         final var securityService = new SecurityService(databaseService);
         final var userDetails = securityService.loadUserByUsername(TestUser.EMAIL);

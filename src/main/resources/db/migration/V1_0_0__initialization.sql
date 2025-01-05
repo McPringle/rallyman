@@ -37,6 +37,7 @@ CREATE TABLE `user` (
     `email` VARCHAR(255) NOT NULL,
     `password_hash` VARCHAR(255) NULL,
     `name` VARCHAR(255) NOT NULL DEFAULT '',
+    `last_login` DATETIME NULL,
     PRIMARY KEY (`id`)
 );
 

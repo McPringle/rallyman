@@ -17,4 +17,6 @@
  */
 package swiss.fihlon.rallyman.data.entity;
 
-public record UserData(Long id, String email, String passwordHash, String name) { }
+import java.time.LocalDateTime;
+
+public record UserData(Long id, String email, String passwordHash, String name, LocalDateTime lastLogin) { }
