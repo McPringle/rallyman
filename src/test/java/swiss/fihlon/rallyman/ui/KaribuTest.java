@@ -37,10 +37,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
 import swiss.fihlon.rallyman.data.entity.Role;
+import swiss.fihlon.rallyman.security.AuthenticationSuccessEventListener;
 
 import java.util.List;
 
@@ -56,6 +58,9 @@ public abstract class KaribuTest {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private AuthenticationSuccessEventListener authenticationSuccessEventListener;
+
     @RegisterExtension
     protected static final GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
             .withConfiguration(GreenMailConfiguration.aConfig()
@@ -68,9 +73,6 @@ public abstract class KaribuTest {
     public static void discoverRoutes() {
         routes = new Routes().autoDiscoverViews("swiss.fihlon.rallyman");
     }
-
-    @Autowired
-    private ApplicationContext applicationContext;
 
     @BeforeEach
     public void setup() throws FolderException {
@@ -85,6 +87,7 @@ public abstract class KaribuTest {
         MockVaadin.tearDown();
     }
 
+    @SuppressWarnings("java:S125") // for explanations of steps of fake login process
     protected void login(@NotNull final String user, @NotNull final String password, @NotNull final List<Role> roles) {
         // taken from https://www.baeldung.com/manually-set-user-authentication-spring-security
         // also see https://github.com/mvysny/karibu-testing/issues/47 for more details.
@@ -100,6 +103,10 @@ public abstract class KaribuTest {
         final var request = (FakeRequest) VaadinServletRequest.getCurrent().getRequest();
         request.setUserPrincipalInt(authenticationToken);
         request.setUserInRole((principal, role) -> roles.contains(Role.valueOf(role)));
+
+        // last but not least, the AuthenticationSuccessEventListener must be called
+        final var authenticationSuccessEvent = new AuthenticationSuccessEvent(authenticationToken);
+        authenticationSuccessEventListener.onApplicationEvent(authenticationSuccessEvent);
     }
 
     @AfterEach
