@@ -21,8 +21,10 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.login.LoginForm;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import swiss.fihlon.rallyman.data.TestUser;
 import swiss.fihlon.rallyman.data.entity.Role;
+import swiss.fihlon.rallyman.service.DatabaseService;
 import swiss.fihlon.rallyman.ui.KaribuTest;
 
 import java.util.List;
@@ -30,11 +32,15 @@ import java.util.List;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._assertOne;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._click;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class LoginIT extends KaribuTest {
 
+    @Autowired
+    private DatabaseService databaseService;
+
     @Test
-    @SuppressWarnings("java:S2699") // false positive: Karibu assertions are not recognized
     void loginAndLogout() {
 
         // not logged in: call to profile page forwards to login page
@@ -43,8 +49,10 @@ class LoginIT extends KaribuTest {
         _assertOne(LoginView.class);
         _assertOne(LoginForm.class);
 
-        // do a fake login
+        // do a login and check for the change of the last login date and time
+        assertNull(databaseService.getUserByEmail(TestUser.EMAIL).orElseThrow().lastLogin());
         login(TestUser.EMAIL, TestUser.PASSWORD, List.of(Role.USER));
+        assertNotNull(databaseService.getUserByEmail(TestUser.EMAIL).orElseThrow().lastLogin());
 
         // logged in: profile page is accessible
         UI.getCurrent().navigate(ProfileView.class);
