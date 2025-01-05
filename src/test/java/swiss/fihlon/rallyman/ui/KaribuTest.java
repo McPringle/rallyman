@@ -53,6 +53,9 @@ import java.util.List;
 @DirtiesContext
 public abstract class KaribuTest {
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
     @RegisterExtension
     protected static final GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
             .withConfiguration(GreenMailConfiguration.aConfig()
