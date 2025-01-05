@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import swiss.fihlon.rallyman.data.entity.UserData;
 import swiss.fihlon.rallyman.service.getter.DSLContextGetter;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static swiss.fihlon.rallyman.data.db.Tables.USER;
@@ -34,4 +35,10 @@ interface UserService extends DSLContextGetter, MailService {
                 .fetchOptionalInto(UserData.class);
     }
 
+    default void updateUserLoginDate(@NotNull final String userEmail, @NotNull final LocalDateTime dateTime) {
+        dsl().update(USER)
+                .set(USER.LAST_LOGIN, dateTime)
+                .where(USER.EMAIL.eq(userEmail))
+                .execute();
+    }
 }
