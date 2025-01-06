@@ -30,9 +30,15 @@ import java.util.TimeZone;
 @Component
 public final class AuthenticationSuccessEventListener implements ApplicationListener<AuthenticationSuccessEvent> {
 
+    private final @NotNull SecurityService securityService;
+    private final @NotNull LoginAttemptService loginAttemptService;
     private final @NotNull DatabaseService databaseService;
 
-    public AuthenticationSuccessEventListener(@NotNull final DatabaseService databaseService) {
+    public AuthenticationSuccessEventListener(@NotNull final SecurityService securityService,
+                                              @NotNull final LoginAttemptService loginAttemptService,
+                                              @NotNull final DatabaseService databaseService) {
+        this.securityService = securityService;
+        this.loginAttemptService = loginAttemptService;
         this.databaseService = databaseService;
     }
 
@@ -42,6 +48,7 @@ public final class AuthenticationSuccessEventListener implements ApplicationList
         final var instant = Instant.ofEpochMilli(e.getTimestamp());
         final var dateTime = LocalDateTime.ofInstant(instant, TimeZone.getDefault().toZoneId());
         databaseService.updateUserLoginDate(userEmail, dateTime);
+        loginAttemptService.loginSucceeded(securityService.getClientIP());
     }
 
 }
