@@ -58,7 +58,8 @@ class WebsiteLayoutTest {
         when(contentMock.getElement()).thenReturn(elementMock);
         when(elementMock.getComponent()).thenReturn(Optional.empty());
 
-        final var exception = assertThrows(IllegalArgumentException.class, () -> new WebsiteLayout().showRouterLayoutContent(contentMock));
+        final var websiteLayout = new WebsiteLayout();
+        final var exception = assertThrows(IllegalArgumentException.class, () -> websiteLayout.showRouterLayoutContent(contentMock));
         assertEquals("The content must contain at least one child", exception.getMessage());
     }
 }
