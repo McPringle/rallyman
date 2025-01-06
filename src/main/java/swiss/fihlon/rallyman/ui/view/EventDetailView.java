@@ -32,8 +32,7 @@ import swiss.fihlon.rallyman.ui.component.EventDetail;
 @Route(value = "event/:id", layout = WebsiteLayout.class)
 public final class EventDetailView extends Div implements BeforeEnterObserver {
 
-    @NotNull
-    private final transient DatabaseService databaseService;
+    private final transient @NotNull DatabaseService databaseService;
 
     public EventDetailView(final @NotNull DatabaseService databaseService) {
         this.databaseService = databaseService;

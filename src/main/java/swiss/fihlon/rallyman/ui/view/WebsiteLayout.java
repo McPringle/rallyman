@@ -26,8 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class WebsiteLayout extends VerticalLayout implements RouterLayout {
 
-    @NotNull
-    private final Main main;
+    private final @NotNull Main main;
 
     public WebsiteLayout() {
         addClassName("website-layout");
