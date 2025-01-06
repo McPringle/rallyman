@@ -17,7 +17,9 @@
  */
 package swiss.fihlon.rallyman.security;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,18 +34,36 @@ import java.util.Set;
 @Service
 public final class SecurityService implements UserDetailsService {
 
+    private final @NotNull HttpServletRequest request;
+    private final @NotNull LoginAttemptService loginAttemptService;
     private final @NotNull DatabaseService databaseService;
 
-    public SecurityService(@NotNull final DatabaseService databaseService) {
+    public SecurityService(@NotNull final HttpServletRequest request,
+                           @NotNull final LoginAttemptService loginAttemptService,
+                           @NotNull final DatabaseService databaseService) {
+        this.request = request;
+        this.loginAttemptService = loginAttemptService;
         this.databaseService = databaseService;
     }
 
     @Override
-    public @NotNull UserDetails loadUserByUsername(@NotNull final String username) throws UsernameNotFoundException {
+    public @NotNull UserDetails loadUserByUsername(@NotNull final String username) throws LockedException, UsernameNotFoundException {
+        if (loginAttemptService.isBlocked(getClientIP())) {
+            throw new LockedException("Too many failed login attempts, IP address blocked for 24 hours!");
+        }
+
         return databaseService.getUserByEmail(username)
                 .map(userData -> new User(userData.email(), userData.passwordHash(),
                         Set.of(new SimpleGrantedAuthority(Role.USER.name()))))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    }
+
+    public String getClientIP() {
+        final var xfHeader = request.getHeader("X-Forwarded-For");
+        if (xfHeader == null) {
+            return request.getRemoteAddr();
+        }
+        return xfHeader.split(",")[0];
     }
 
 }

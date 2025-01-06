@@ -17,7 +17,10 @@
  */
 package swiss.fihlon.rallyman.security;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import swiss.fihlon.rallyman.data.TestUser;
 import swiss.fihlon.rallyman.data.entity.UserData;
@@ -33,13 +36,25 @@ import static org.mockito.Mockito.when;
 
 class SecurityServiceTest {
 
+    private static final String TEST_IP = "127.0.0.1";
+
+    private HttpServletRequest mockedRequest;
+    private LoginAttemptService mockedLoginAttemptService;
+    private DatabaseService mockedDatabaseService;
+
+    @BeforeEach
+    void beforeEach() {
+        mockedRequest = mock(HttpServletRequest.class);
+        mockedLoginAttemptService = mock(LoginAttemptService.class);
+        mockedDatabaseService = mock(DatabaseService.class);
+    }
+
     @Test
     void loadUserByUsernameSuccess() {
-        final var databaseService = mock(DatabaseService.class);
-        when(databaseService.getUserByEmail(TestUser.EMAIL)).thenReturn(
+        when(mockedDatabaseService.getUserByEmail(TestUser.EMAIL)).thenReturn(
                 Optional.of(new UserData(1L, TestUser.EMAIL, TestUser.PASSWORD_HASH, TestUser.NAME, TestUser.LAST_LOGIN)));
 
-        final var securityService = new SecurityService(databaseService);
+        final var securityService = new SecurityService(mockedRequest, mockedLoginAttemptService, mockedDatabaseService);
         final var userDetails = securityService.loadUserByUsername(TestUser.EMAIL);
         assertNotNull(userDetails);
         assertEquals(TestUser.EMAIL, userDetails.getUsername());
@@ -47,13 +62,39 @@ class SecurityServiceTest {
     }
 
     @Test
-    void loadUserByUsernameException() {
-        final var databaseService = mock(DatabaseService.class);
-        when(databaseService.getUserByEmail(TestUser.EMAIL)).thenReturn(Optional.empty());
+    void loadUserByUsernameNotFoundException() {
+        when(mockedDatabaseService.getUserByEmail(TestUser.EMAIL)).thenReturn(Optional.empty());
 
-        final var securityService = new SecurityService(databaseService);
+        final var securityService = new SecurityService(mockedRequest, mockedLoginAttemptService, mockedDatabaseService);
         final var exception = assertThrows(UsernameNotFoundException.class, () -> securityService.loadUserByUsername(TestUser.EMAIL));
         assertEquals("User not found: " + TestUser.EMAIL, exception.getMessage());
+    }
+
+    @Test
+    void loadUserByUsernameLockedException() {
+        when(mockedDatabaseService.getUserByEmail(TestUser.EMAIL)).thenReturn(
+                Optional.of(new UserData(1L, TestUser.EMAIL, TestUser.PASSWORD_HASH, TestUser.NAME, TestUser.LAST_LOGIN)));
+
+        when(mockedRequest.getRemoteAddr()).thenReturn(TEST_IP);
+        when(mockedLoginAttemptService.isBlocked(TEST_IP)).thenReturn(true);
+
+        final var securityService = new SecurityService(mockedRequest, mockedLoginAttemptService, mockedDatabaseService);
+        final var exception = assertThrows(LockedException.class, () -> securityService.loadUserByUsername(TestUser.EMAIL));
+        assertEquals("Too many failed login attempts, IP address blocked for 24 hours!", exception.getMessage());
+    }
+
+    @Test
+    void getClientIP() {
+        when(mockedRequest.getRemoteAddr()).thenReturn("127.0.0.1");
+
+        final var securityService = new SecurityService(mockedRequest, mockedLoginAttemptService, mockedDatabaseService);
+        assertEquals("127.0.0.1", securityService.getClientIP());
+
+        when(mockedRequest.getHeader("X-Forwarded-For")).thenReturn("127.0.0.2");
+        assertEquals("127.0.0.2", securityService.getClientIP());
+
+        when(mockedRequest.getHeader("X-Forwarded-For")).thenReturn("127.0.0.3, 127.0.0.4");
+        assertEquals("127.0.0.3", securityService.getClientIP());
     }
 
 }

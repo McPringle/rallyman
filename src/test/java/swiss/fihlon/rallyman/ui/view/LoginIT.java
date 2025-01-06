@@ -22,8 +22,16 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.login.LoginForm;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+import org.springframework.security.core.Authentication;
 import swiss.fihlon.rallyman.data.TestUser;
 import swiss.fihlon.rallyman.data.entity.Role;
+import swiss.fihlon.rallyman.security.AuthenticationFailureEventListener;
+import swiss.fihlon.rallyman.security.AuthenticationSuccessEventListener;
+import swiss.fihlon.rallyman.security.LoginAttemptService;
+import swiss.fihlon.rallyman.security.SecurityService;
 import swiss.fihlon.rallyman.service.DatabaseService;
 import swiss.fihlon.rallyman.ui.KaribuTest;
 
@@ -32,13 +40,20 @@ import java.util.List;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._assertOne;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._click;
 import static com.github.mvysny.kaributesting.v10.LocatorJ._get;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class LoginIT extends KaribuTest {
 
     @Autowired
     private DatabaseService databaseService;
+
+    @Autowired
+    private LoginAttemptService loginAttemptService;
 
     @Test
     void loginAndLogout() {
@@ -72,6 +87,31 @@ class LoginIT extends KaribuTest {
         UI.getCurrent().getPage().reload();
         _assertOne(LoginView.class);
         _assertOne(LoginForm.class);
+    }
+
+    @Test
+    void blockIP() {
+        final var ip = "127.0.0.1";
+
+        final var authentication = mock(Authentication.class);
+        final var securityService = mock(SecurityService.class);
+        when(securityService.getClientIP()).thenReturn(ip);
+
+        final var exception = new BadCredentialsException("Block IP Test");
+        final var failureEvent = new AuthenticationFailureBadCredentialsEvent(authentication, exception);
+        final var failureListener = new AuthenticationFailureEventListener(securityService, loginAttemptService);
+        final var successEvent = new AuthenticationSuccessEvent(authentication);
+        final var successListener = new AuthenticationSuccessEventListener(securityService, loginAttemptService, databaseService);
+
+        assertFalse(loginAttemptService.isBlocked(ip));
+        failureListener.onApplicationEvent(failureEvent); // 1st login fail
+        assertFalse(loginAttemptService.isBlocked(ip));   // ok
+        failureListener.onApplicationEvent(failureEvent); // 2nd login fail
+        assertFalse(loginAttemptService.isBlocked(ip));   // ok
+        failureListener.onApplicationEvent(failureEvent); // 3rd login fail
+        assertTrue(loginAttemptService.isBlocked(ip));    // blocked
+        successListener.onApplicationEvent(successEvent); // login success
+        assertFalse(loginAttemptService.isBlocked(ip));   // ok
     }
 
 }
