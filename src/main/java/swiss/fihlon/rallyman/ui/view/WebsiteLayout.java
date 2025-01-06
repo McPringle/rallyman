@@ -36,7 +36,7 @@ public final class WebsiteLayout extends VerticalLayout implements RouterLayout 
     }
 
     @Override
-    public void showRouterLayoutContent(@NotNull final HasElement content) {
+    public void showRouterLayoutContent(final @NotNull HasElement content) {
         main.removeAll();
         main.add(content.getElement().getComponent()
                 .orElseThrow(() -> new IllegalArgumentException("The content must contain at least one child")));

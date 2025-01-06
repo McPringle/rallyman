@@ -37,23 +37,23 @@ public final class LoginAttemptService {
                 expireAfterWrite(1, TimeUnit.DAYS)
                 .build(new CacheLoader<>() {
                     @Override
-                    public @NotNull Integer load(@NotNull final String ip) {
+                    public @NotNull Integer load(final @NotNull String ip) {
                         return 0;
                     }
                 }));
     }
 
     @Autowired(required = false) // this constructor is for tests only
-    public LoginAttemptService(@NotNull final LoadingCache<String, Integer> attemptsCache) {
+    public LoginAttemptService(final @NotNull LoadingCache<String, Integer> attemptsCache) {
         super();
         this.attemptsCache = attemptsCache;
     }
 
-    public void loginSucceeded(@NotNull final String ip) {
+    public void loginSucceeded(final @NotNull String ip) {
         attemptsCache.invalidate(ip);
     }
 
-    public void loginFailed(@NotNull final String ip) {
+    public void loginFailed(final @NotNull String ip) {
         int attempts;
         try {
             attempts = attemptsCache.get(ip);
@@ -64,7 +64,7 @@ public final class LoginAttemptService {
         attemptsCache.put(ip, attempts);
     }
 
-    public boolean isBlocked(@NotNull final String ip) {
+    public boolean isBlocked(final @NotNull String ip) {
         try {
             return attemptsCache.get(ip) >= 3;
         } catch (final ExecutionException e) {

@@ -88,7 +88,7 @@ public abstract class KaribuTest {
     }
 
     @SuppressWarnings("java:S125") // for explanations of steps of fake login process
-    protected void login(@NotNull final String user, @NotNull final String password, @NotNull final List<Role> roles) {
+    protected void login(final @NotNull String user, final @NotNull String password, final @NotNull List<Role> roles) {
         // taken from https://www.baeldung.com/manually-set-user-authentication-spring-security
         // also see https://github.com/mvysny/karibu-testing/issues/47 for more details.
         final var authorities = roles.stream()

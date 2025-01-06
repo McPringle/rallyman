@@ -35,7 +35,7 @@ public final class AuthenticatedUser {
 
     private final DatabaseService databaseService;
 
-    public AuthenticatedUser(@NotNull final DatabaseService databaseService) {
+    public AuthenticatedUser(final @NotNull DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
 
@@ -58,7 +58,7 @@ public final class AuthenticatedUser {
         logout(SecurityConfiguration.LOGOUT_URL);
     }
 
-    public void logout(@NotNull final String location) {
+    public void logout(final @NotNull String location) {
         UI.getCurrent().getPage().setLocation(location);
         final var logoutHandler = new SecurityContextLogoutHandler();
         logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(), null, null);

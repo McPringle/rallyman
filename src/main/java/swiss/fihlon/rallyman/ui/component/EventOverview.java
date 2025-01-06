@@ -23,7 +23,7 @@ import swiss.fihlon.rallyman.service.DatabaseService;
 
 public class EventOverview extends Div {
 
-    public EventOverview(@NotNull final DatabaseService databaseService) {
+    public EventOverview(final @NotNull DatabaseService databaseService) {
         addClassName("event-overview");
         databaseService.getUpcomingEvents()
                 .map(EventSummary::new)

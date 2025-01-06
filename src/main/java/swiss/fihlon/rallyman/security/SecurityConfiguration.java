@@ -40,13 +40,13 @@ public class SecurityConfiguration extends VaadinWebSecurity {
             new BCryptPasswordEncoder(10, new SecureRandom());
 
     @Override
-    protected void configure(@NotNull final HttpSecurity http) throws Exception {
+    protected void configure(final @NotNull HttpSecurity http) throws Exception {
         super.configure(http);
         setLoginView(http, LoginView.class, LOGOUT_URL);
     }
 
     @Override
-    protected void configure(@NotNull final WebSecurity web) throws Exception {
+    protected void configure(final @NotNull WebSecurity web) throws Exception {
         super.configure(web);
         web.ignoring().requestMatchers(
                 // Client-side JS

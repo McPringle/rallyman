@@ -24,11 +24,11 @@ public final class GravatarUtil {
 
     public static final String GRAVATAR_URL = "https://www.gravatar.com/avatar/";
 
-    public static String getGravatarAddress(@NotNull final String email) {
+    public static String getGravatarAddress(final @NotNull String email) {
         return getGravatarAddress(email, 80);
     }
 
-    public static String getGravatarAddress(@NotNull final String email, final int size) {
+    public static String getGravatarAddress(final @NotNull String email, final int size) {
         if (size < 1 || size > 2048) {
             throw new IllegalArgumentException("The size must be between 1 and 2'048!");
         }

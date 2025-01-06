@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class ComponentUtil {
 
-    public static Component createDiv(@NotNull final String className, @NotNull final Component... components) {
+    public static Component createDiv(final @NotNull String className, final @NotNull Component... components) {
         final var div = new Div(components);
         div.addClassName(className);
         return div;

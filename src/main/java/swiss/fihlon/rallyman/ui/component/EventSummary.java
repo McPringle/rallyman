@@ -28,7 +28,7 @@ import static swiss.fihlon.rallyman.util.ComponentUtil.createDiv;
 
 public class EventSummary extends Div {
 
-    public EventSummary(@NotNull final EventSummaryData eventSummaryData) {
+    public EventSummary(final @NotNull EventSummaryData eventSummaryData) {
         addClassName("event-summary");
 
         add(createDiv("event-name", new Text(eventSummaryData.name())));

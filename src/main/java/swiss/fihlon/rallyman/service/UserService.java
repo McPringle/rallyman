@@ -28,14 +28,14 @@ import static swiss.fihlon.rallyman.data.db.Tables.USER;
 
 interface UserService extends DSLContextGetter, MailService {
 
-    default Optional<UserData> getUserByEmail(@NotNull final String email) {
+    default Optional<UserData> getUserByEmail(final @NotNull String email) {
         return dsl().selectFrom(USER)
                 .where(USER.EMAIL.eq(email))
                 .limit(1)
                 .fetchOptionalInto(UserData.class);
     }
 
-    default void updateUserLoginDate(@NotNull final String userEmail, @NotNull final LocalDateTime dateTime) {
+    default void updateUserLoginDate(final @NotNull String userEmail, final @NotNull LocalDateTime dateTime) {
         dsl().update(USER)
                 .set(USER.LAST_LOGIN, dateTime)
                 .where(USER.EMAIL.eq(userEmail))

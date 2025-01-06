@@ -31,7 +31,7 @@ import swiss.fihlon.rallyman.security.AuthenticatedUser;
 @PermitAll
 public class LogoutView extends Composite<VerticalLayout> {
 
-    public LogoutView(@NotNull final AuthenticatedUser authenticatedUser) {
+    public LogoutView(final @NotNull AuthenticatedUser authenticatedUser) {
         authenticatedUser.logout();
     }
 

@@ -32,9 +32,9 @@ public final class DatabaseService implements ConfigurationGetter, DSLContextGet
     private final @NotNull DSLContext dsl;
     private final @NotNull MailSender mailSender;
 
-    public DatabaseService(@NotNull final AppConfig appConfig,
-                           @NotNull final DSLContext dsl,
-                           @NotNull final MailSender mailSender) {
+    public DatabaseService(final @NotNull AppConfig appConfig,
+                           final @NotNull DSLContext dsl,
+                           final @NotNull MailSender mailSender) {
         this.appConfig = appConfig;
         this.dsl = dsl;
         this.mailSender = mailSender;

@@ -36,7 +36,7 @@ import static swiss.fihlon.rallyman.util.ComponentUtil.createDiv;
 
 public class EventDetail extends Div {
 
-    public EventDetail(@NotNull final EventDetailData eventDetailData) {
+    public EventDetail(final @NotNull EventDetailData eventDetailData) {
         addClassName("event-detail");
 
         add(createDiv("event-name", new Text(eventDetailData.name())));
@@ -46,7 +46,7 @@ public class EventDetail extends Div {
         add(createDiv("event-map", createMap(eventDetailData.location())));
     }
 
-    private Component createMap(@NotNull final LocationData locationData) {
+    private Component createMap(final @NotNull LocationData locationData) {
         final LComponentManagementRegistry reg = new LDefaultComponentManagementRegistry(this);
         final MapContainer mapContainer = new MapContainer(reg);
         mapContainer.setSizeFull();

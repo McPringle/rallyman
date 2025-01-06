@@ -31,9 +31,9 @@ import java.util.regex.Pattern;
 
 public interface MailService extends ConfigurationGetter, DSLContextGetter, MailSenderGetter, MailTemplateService {
 
-    default void sendMail(@NotNull final MailTemplateId mailTemplateId,
+    default void sendMail(final @NotNull MailTemplateId mailTemplateId,
                           @Nullable final Map<String, String> variables,
-                          @NotNull final String... emailAddresses) {
+                          final @NotNull String... emailAddresses) {
         final var mailTemplateRecord = getMailTemplate(mailTemplateId).orElseThrow();
         final var message = new SimpleMailMessage();
         message.setTo(emailAddresses);
@@ -43,7 +43,7 @@ public interface MailService extends ConfigurationGetter, DSLContextGetter, Mail
         mailSender().send(message);
     }
 
-    private String replaceVariables(@NotNull final String text,
+    private String replaceVariables(final @NotNull String text,
                                     @Nullable final Map<String, String> variables) {
         String returnValue = text;
         if (variables != null) {

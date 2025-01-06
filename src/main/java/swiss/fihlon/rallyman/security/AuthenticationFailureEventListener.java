@@ -31,14 +31,14 @@ public final class AuthenticationFailureEventListener implements ApplicationList
     private final @NotNull HttpServletRequest request;
     private final @NotNull LoginAttemptService loginAttemptService;
 
-    public AuthenticationFailureEventListener(@NotNull final HttpServletRequest request,
-                                              @NotNull final LoginAttemptService loginAttemptService) {
+    public AuthenticationFailureEventListener(final @NotNull HttpServletRequest request,
+                                              final @NotNull LoginAttemptService loginAttemptService) {
         this.request = request;
         this.loginAttemptService = loginAttemptService;
     }
 
     @Override
-    public void onApplicationEvent(@NotNull final AuthenticationFailureBadCredentialsEvent event) {
+    public void onApplicationEvent(final @NotNull AuthenticationFailureBadCredentialsEvent event) {
         loginAttemptService.loginFailed(getClientIP(request));
     }
 

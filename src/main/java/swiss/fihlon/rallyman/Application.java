@@ -54,7 +54,7 @@ public class Application implements AppShellConfigurator {
     private static final Option HASH_PASSWORD_OPTION = new Option("p", "password", true, "Hash password and exit");
     private static final Option HELP_OPTION = new Option("h", "help", false, "Show help and exit");
 
-    public static void main(@NotNull final String[] args) throws ParseException {
+    public static void main(final @NotNull String[] args) throws ParseException {
         final var options = new Options();
         options.addOption(HASH_PASSWORD_OPTION);
         options.addOption(HELP_OPTION);

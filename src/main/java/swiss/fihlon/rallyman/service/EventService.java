@@ -56,7 +56,7 @@ interface EventService extends DSLContextGetter {
             return Optional.of(new EventDetailData(
                     recordData.get(EVENT.ID), recordData.get(EVENT.NAME), recordData.get(EVENT.DESCRIPTION), recordData.get(EVENT.DATE),
                     locationData));
-        } catch (@NotNull final NoDataFoundException e) {
+        } catch (final @NotNull NoDataFoundException e) {
             return Optional.empty();
         }
     }

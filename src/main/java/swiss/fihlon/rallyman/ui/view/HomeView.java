@@ -29,7 +29,7 @@ import swiss.fihlon.rallyman.ui.component.EventOverview;
 @Route(value = "", layout = WebsiteLayout.class)
 public final class HomeView extends Div {
 
-    public HomeView(@NotNull final DatabaseService databaseService) {
+    public HomeView(final @NotNull DatabaseService databaseService) {
         addClassName("home-view");
         add(new H1("Welcome to RallyMan"));
         add(new EventOverview(databaseService));

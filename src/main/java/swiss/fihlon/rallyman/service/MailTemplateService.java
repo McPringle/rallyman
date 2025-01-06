@@ -28,7 +28,7 @@ import static swiss.fihlon.rallyman.data.db.Tables.MAIL_TEMPLATE;
 
 public interface MailTemplateService extends DSLContextGetter {
 
-    default Optional<MailTemplateRecord> getMailTemplate(@NotNull final MailTemplateId mailTemplateId) {
+    default Optional<MailTemplateRecord> getMailTemplate(final @NotNull MailTemplateId mailTemplateId) {
         return dsl().selectFrom(MAIL_TEMPLATE)
                 .where(MAIL_TEMPLATE.ID.eq(mailTemplateId.name()))
                 .fetchOptional();

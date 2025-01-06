@@ -34,7 +34,7 @@ import swiss.fihlon.rallyman.util.GravatarUtil;
 @Route(value = "profile", layout = WebsiteLayout.class)
 public final class ProfileView extends VerticalLayout {
 
-    public ProfileView(@NotNull final AuthenticatedUser authenticatedUser) {
+    public ProfileView(final @NotNull AuthenticatedUser authenticatedUser) {
         final var userData = authenticatedUser.orElseThrow();
         addClassName("profile-view");
         add(new H1("Welcome " + userData.name()));
@@ -42,7 +42,7 @@ public final class ProfileView extends VerticalLayout {
         add(new Button("Logout", event -> UI.getCurrent().navigate(LogoutView.class)));
     }
 
-    private Component createAvatar(@NotNull final UserData userData) {
+    private Component createAvatar(final @NotNull UserData userData) {
         final var avatar = new Avatar(userData.name());
         avatar.setImage(GravatarUtil.getGravatarAddress(userData.email()));
         return avatar;

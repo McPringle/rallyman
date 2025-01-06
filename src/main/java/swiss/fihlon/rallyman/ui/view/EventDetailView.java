@@ -35,14 +35,14 @@ public final class EventDetailView extends Div implements BeforeEnterObserver {
     @NotNull
     private final transient DatabaseService databaseService;
 
-    public EventDetailView(@NotNull final DatabaseService databaseService) {
+    public EventDetailView(final @NotNull DatabaseService databaseService) {
         this.databaseService = databaseService;
         addClassName("event-detail-view");
         add(new H1("Event Details"));
     }
 
     @Override
-    public void beforeEnter(@NotNull final BeforeEnterEvent beforeEnterEvent) {
+    public void beforeEnter(final @NotNull BeforeEnterEvent beforeEnterEvent) {
         final var params = beforeEnterEvent.getRouteParameters();
         final var id = Long.parseLong(params.get("id").orElseThrow(NotFoundException::new));
         final var eventDetailData = databaseService.getEvent(id).orElseThrow(NotFoundException::new);

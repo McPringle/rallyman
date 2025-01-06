@@ -37,16 +37,16 @@ public final class AuthenticationSuccessEventListener implements ApplicationList
     private final @NotNull LoginAttemptService loginAttemptService;
     private final @NotNull DatabaseService databaseService;
 
-    public AuthenticationSuccessEventListener(@NotNull final HttpServletRequest request,
-                                              @NotNull final LoginAttemptService loginAttemptService,
-                                              @NotNull final DatabaseService databaseService) {
+    public AuthenticationSuccessEventListener(final @NotNull HttpServletRequest request,
+                                              final @NotNull LoginAttemptService loginAttemptService,
+                                              final @NotNull DatabaseService databaseService) {
         this.request = request;
         this.loginAttemptService = loginAttemptService;
         this.databaseService = databaseService;
     }
 
     @Override
-    public void onApplicationEvent(@NotNull final AuthenticationSuccessEvent e) {
+    public void onApplicationEvent(final @NotNull AuthenticationSuccessEvent e) {
         final var userEmail = e.getAuthentication().getName();
         final var instant = Instant.ofEpochMilli(e.getTimestamp());
         final var dateTime = LocalDateTime.ofInstant(instant, TimeZone.getDefault().toZoneId());

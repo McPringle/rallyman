@@ -40,16 +40,16 @@ public final class SecurityService implements UserDetailsService {
     private final @NotNull LoginAttemptService loginAttemptService;
     private final @NotNull DatabaseService databaseService;
 
-    public SecurityService(@NotNull final HttpServletRequest request,
-                           @NotNull final LoginAttemptService loginAttemptService,
-                           @NotNull final DatabaseService databaseService) {
+    public SecurityService(final @NotNull HttpServletRequest request,
+                           final @NotNull LoginAttemptService loginAttemptService,
+                           final @NotNull DatabaseService databaseService) {
         this.request = request;
         this.loginAttemptService = loginAttemptService;
         this.databaseService = databaseService;
     }
 
     @Override
-    public @NotNull UserDetails loadUserByUsername(@NotNull final String username) throws LockedException, UsernameNotFoundException {
+    public @NotNull UserDetails loadUserByUsername(final @NotNull String username) throws LockedException, UsernameNotFoundException {
         if (loginAttemptService.isBlocked(getClientIP(request))) {
             throw new LockedException("Too many failed login attempts, IP address blocked for 24 hours!");
         }
