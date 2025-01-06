@@ -17,6 +17,7 @@
  */
 package swiss.fihlon.rallyman.security;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
@@ -27,17 +28,19 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.TimeZone;
 
+import static swiss.fihlon.rallyman.util.RequestUtil.getClientIP;
+
 @Component
 public final class AuthenticationSuccessEventListener implements ApplicationListener<AuthenticationSuccessEvent> {
 
-    private final @NotNull SecurityService securityService;
+    private final @NotNull HttpServletRequest request;
     private final @NotNull LoginAttemptService loginAttemptService;
     private final @NotNull DatabaseService databaseService;
 
-    public AuthenticationSuccessEventListener(@NotNull final SecurityService securityService,
+    public AuthenticationSuccessEventListener(@NotNull final HttpServletRequest request,
                                               @NotNull final LoginAttemptService loginAttemptService,
                                               @NotNull final DatabaseService databaseService) {
-        this.securityService = securityService;
+        this.request = request;
         this.loginAttemptService = loginAttemptService;
         this.databaseService = databaseService;
     }
@@ -48,7 +51,7 @@ public final class AuthenticationSuccessEventListener implements ApplicationList
         final var instant = Instant.ofEpochMilli(e.getTimestamp());
         final var dateTime = LocalDateTime.ofInstant(instant, TimeZone.getDefault().toZoneId());
         databaseService.updateUserLoginDate(userEmail, dateTime);
-        loginAttemptService.loginSucceeded(securityService.getClientIP());
+        loginAttemptService.loginSucceeded(getClientIP(request));
     }
 
 }

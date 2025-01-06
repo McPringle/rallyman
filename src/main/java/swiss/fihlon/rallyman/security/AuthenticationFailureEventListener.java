@@ -17,26 +17,29 @@
  */
 package swiss.fihlon.rallyman.security;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.stereotype.Component;
 
+import static swiss.fihlon.rallyman.util.RequestUtil.getClientIP;
+
 @Component
 public final class AuthenticationFailureEventListener implements ApplicationListener<AuthenticationFailureBadCredentialsEvent> {
 
-    private final @NotNull SecurityService securityService;
+    private final @NotNull HttpServletRequest request;
     private final @NotNull LoginAttemptService loginAttemptService;
 
-    public AuthenticationFailureEventListener(@NotNull final SecurityService securityService,
+    public AuthenticationFailureEventListener(@NotNull final HttpServletRequest request,
                                               @NotNull final LoginAttemptService loginAttemptService) {
-        this.securityService = securityService;
+        this.request = request;
         this.loginAttemptService = loginAttemptService;
     }
 
     @Override
     public void onApplicationEvent(@NotNull final AuthenticationFailureBadCredentialsEvent event) {
-        loginAttemptService.loginFailed(securityService.getClientIP());
+        loginAttemptService.loginFailed(getClientIP(request));
     }
 
 }

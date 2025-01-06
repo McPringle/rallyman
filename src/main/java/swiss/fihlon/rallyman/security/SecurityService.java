@@ -31,6 +31,8 @@ import swiss.fihlon.rallyman.service.DatabaseService;
 
 import java.util.Set;
 
+import static swiss.fihlon.rallyman.util.RequestUtil.getClientIP;
+
 @Service
 public final class SecurityService implements UserDetailsService {
 
@@ -48,7 +50,7 @@ public final class SecurityService implements UserDetailsService {
 
     @Override
     public @NotNull UserDetails loadUserByUsername(@NotNull final String username) throws LockedException, UsernameNotFoundException {
-        if (loginAttemptService.isBlocked(getClientIP())) {
+        if (loginAttemptService.isBlocked(getClientIP(request))) {
             throw new LockedException("Too many failed login attempts, IP address blocked for 24 hours!");
         }
 
@@ -56,14 +58,6 @@ public final class SecurityService implements UserDetailsService {
                 .map(userData -> new User(userData.email(), userData.passwordHash(),
                         Set.of(new SimpleGrantedAuthority(Role.USER.name()))))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-    }
-
-    public String getClientIP() {
-        final var xfHeader = request.getHeader("X-Forwarded-For");
-        if (xfHeader == null) {
-            return request.getRemoteAddr();
-        }
-        return xfHeader.split(",")[0];
     }
 
 }

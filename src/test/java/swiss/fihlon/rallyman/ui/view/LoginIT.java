@@ -20,6 +20,7 @@ package swiss.fihlon.rallyman.ui.view;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.login.LoginForm;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,7 +32,6 @@ import swiss.fihlon.rallyman.data.entity.Role;
 import swiss.fihlon.rallyman.security.AuthenticationFailureEventListener;
 import swiss.fihlon.rallyman.security.AuthenticationSuccessEventListener;
 import swiss.fihlon.rallyman.security.LoginAttemptService;
-import swiss.fihlon.rallyman.security.SecurityService;
 import swiss.fihlon.rallyman.service.DatabaseService;
 import swiss.fihlon.rallyman.ui.KaribuTest;
 
@@ -94,14 +94,14 @@ class LoginIT extends KaribuTest {
         final var ip = "127.0.0.1";
 
         final var authentication = mock(Authentication.class);
-        final var securityService = mock(SecurityService.class);
-        when(securityService.getClientIP()).thenReturn(ip);
+        final var request = mock(HttpServletRequest.class);
+        when(request.getRemoteAddr()).thenReturn(ip);
 
         final var exception = new BadCredentialsException("Block IP Test");
         final var failureEvent = new AuthenticationFailureBadCredentialsEvent(authentication, exception);
-        final var failureListener = new AuthenticationFailureEventListener(securityService, loginAttemptService);
+        final var failureListener = new AuthenticationFailureEventListener(request, loginAttemptService);
         final var successEvent = new AuthenticationSuccessEvent(authentication);
-        final var successListener = new AuthenticationSuccessEventListener(securityService, loginAttemptService, databaseService);
+        final var successListener = new AuthenticationSuccessEventListener(request, loginAttemptService, databaseService);
 
         assertFalse(loginAttemptService.isBlocked(ip));
         failureListener.onApplicationEvent(failureEvent); // 1st login fail

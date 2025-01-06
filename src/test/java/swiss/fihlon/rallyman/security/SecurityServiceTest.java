@@ -83,18 +83,4 @@ class SecurityServiceTest {
         assertEquals("Too many failed login attempts, IP address blocked for 24 hours!", exception.getMessage());
     }
 
-    @Test
-    void getClientIP() {
-        when(mockedRequest.getRemoteAddr()).thenReturn("127.0.0.1");
-
-        final var securityService = new SecurityService(mockedRequest, mockedLoginAttemptService, mockedDatabaseService);
-        assertEquals("127.0.0.1", securityService.getClientIP());
-
-        when(mockedRequest.getHeader("X-Forwarded-For")).thenReturn("127.0.0.2");
-        assertEquals("127.0.0.2", securityService.getClientIP());
-
-        when(mockedRequest.getHeader("X-Forwarded-For")).thenReturn("127.0.0.3, 127.0.0.4");
-        assertEquals("127.0.0.3", securityService.getClientIP());
-    }
-
 }
