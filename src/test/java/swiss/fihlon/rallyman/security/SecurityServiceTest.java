@@ -38,23 +38,23 @@ class SecurityServiceTest {
 
     private static final String TEST_IP = "127.0.0.1";
 
-    private HttpServletRequest mockedRequest;
-    private LoginAttemptService mockedLoginAttemptService;
-    private DatabaseService mockedDatabaseService;
+    private HttpServletRequest requestMock;
+    private LoginAttemptService loginAttemptServiceMock;
+    private DatabaseService databaseServiceMock;
 
     @BeforeEach
     void beforeEach() {
-        mockedRequest = mock(HttpServletRequest.class);
-        mockedLoginAttemptService = mock(LoginAttemptService.class);
-        mockedDatabaseService = mock(DatabaseService.class);
+        requestMock = mock(HttpServletRequest.class);
+        loginAttemptServiceMock = mock(LoginAttemptService.class);
+        databaseServiceMock = mock(DatabaseService.class);
     }
 
     @Test
     void loadUserByUsernameSuccess() {
-        when(mockedDatabaseService.getUserByEmail(TestUser.EMAIL)).thenReturn(
+        when(databaseServiceMock.getUserByEmail(TestUser.EMAIL)).thenReturn(
                 Optional.of(new UserData(1L, TestUser.EMAIL, TestUser.PASSWORD_HASH, TestUser.NAME, TestUser.LAST_LOGIN)));
 
-        final var securityService = new SecurityService(mockedRequest, mockedLoginAttemptService, mockedDatabaseService);
+        final var securityService = new SecurityService(requestMock, loginAttemptServiceMock, databaseServiceMock);
         final var userDetails = securityService.loadUserByUsername(TestUser.EMAIL);
         assertNotNull(userDetails);
         assertEquals(TestUser.EMAIL, userDetails.getUsername());
@@ -63,22 +63,22 @@ class SecurityServiceTest {
 
     @Test
     void loadUserByUsernameNotFoundException() {
-        when(mockedDatabaseService.getUserByEmail(TestUser.EMAIL)).thenReturn(Optional.empty());
+        when(databaseServiceMock.getUserByEmail(TestUser.EMAIL)).thenReturn(Optional.empty());
 
-        final var securityService = new SecurityService(mockedRequest, mockedLoginAttemptService, mockedDatabaseService);
+        final var securityService = new SecurityService(requestMock, loginAttemptServiceMock, databaseServiceMock);
         final var exception = assertThrows(UsernameNotFoundException.class, () -> securityService.loadUserByUsername(TestUser.EMAIL));
         assertEquals("User not found: " + TestUser.EMAIL, exception.getMessage());
     }
 
     @Test
     void loadUserByUsernameLockedException() {
-        when(mockedDatabaseService.getUserByEmail(TestUser.EMAIL)).thenReturn(
+        when(databaseServiceMock.getUserByEmail(TestUser.EMAIL)).thenReturn(
                 Optional.of(new UserData(1L, TestUser.EMAIL, TestUser.PASSWORD_HASH, TestUser.NAME, TestUser.LAST_LOGIN)));
 
-        when(mockedRequest.getRemoteAddr()).thenReturn(TEST_IP);
-        when(mockedLoginAttemptService.isBlocked(TEST_IP)).thenReturn(true);
+        when(requestMock.getRemoteAddr()).thenReturn(TEST_IP);
+        when(loginAttemptServiceMock.isBlocked(TEST_IP)).thenReturn(true);
 
-        final var securityService = new SecurityService(mockedRequest, mockedLoginAttemptService, mockedDatabaseService);
+        final var securityService = new SecurityService(requestMock, loginAttemptServiceMock, databaseServiceMock);
         final var exception = assertThrows(LockedException.class, () -> securityService.loadUserByUsername(TestUser.EMAIL));
         assertEquals("Too many failed login attempts, IP address blocked for 24 hours!", exception.getMessage());
     }

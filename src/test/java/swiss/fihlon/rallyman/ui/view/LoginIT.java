@@ -93,15 +93,15 @@ class LoginIT extends KaribuTest {
     void blockIP() {
         final var ip = "127.0.0.1";
 
-        final var authentication = mock(Authentication.class);
-        final var request = mock(HttpServletRequest.class);
-        when(request.getRemoteAddr()).thenReturn(ip);
+        final var authenticationMock = mock(Authentication.class);
+        final var requestMock = mock(HttpServletRequest.class);
+        when(requestMock.getRemoteAddr()).thenReturn(ip);
 
         final var exception = new BadCredentialsException("Block IP Test");
-        final var failureEvent = new AuthenticationFailureBadCredentialsEvent(authentication, exception);
-        final var failureListener = new AuthenticationFailureEventListener(request, loginAttemptService);
-        final var successEvent = new AuthenticationSuccessEvent(authentication);
-        final var successListener = new AuthenticationSuccessEventListener(request, loginAttemptService, databaseService);
+        final var failureEvent = new AuthenticationFailureBadCredentialsEvent(authenticationMock, exception);
+        final var failureListener = new AuthenticationFailureEventListener(requestMock, loginAttemptService);
+        final var successEvent = new AuthenticationSuccessEvent(authenticationMock);
+        final var successListener = new AuthenticationSuccessEventListener(requestMock, loginAttemptService, databaseService);
 
         assertFalse(loginAttemptService.isBlocked(ip));
         failureListener.onApplicationEvent(failureEvent); // 1st login fail

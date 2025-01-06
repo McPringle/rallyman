@@ -33,11 +33,11 @@ class EventOverviewTest {
 
     @Test
     void happyCase() {
-        final var databaseService = mock(DatabaseService.class);
-        when(databaseService.getUpcomingEvents())
+        final var databaseServiceMock = mock(DatabaseService.class);
+        when(databaseServiceMock.getUpcomingEvents())
                 .thenReturn(Stream.of(new EventSummaryData(42L, "Test Name", LocalDateTime.MAX, "Test Location")));
 
-        final var eventOverview = new EventOverview(databaseService);
+        final var eventOverview = new EventOverview(databaseServiceMock);
         assertEquals(1, eventOverview.getChildren().count());
         assertInstanceOf(EventSummary.class, eventOverview.getChildren().findFirst().orElseThrow());
     }

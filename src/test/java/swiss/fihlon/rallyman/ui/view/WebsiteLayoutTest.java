@@ -53,12 +53,12 @@ class WebsiteLayoutTest {
 
     @Test
     void illegalArgument() {
-        final var content = mock(HasElement.class);
-        final var element = mock(Element.class);
-        when(content.getElement()).thenReturn(element);
-        when(element.getComponent()).thenReturn(Optional.empty());
+        final var contentMock = mock(HasElement.class);
+        final var elementMock = mock(Element.class);
+        when(contentMock.getElement()).thenReturn(elementMock);
+        when(elementMock.getComponent()).thenReturn(Optional.empty());
 
-        final var exception = assertThrows(IllegalArgumentException.class, () -> new WebsiteLayout().showRouterLayoutContent(content));
+        final var exception = assertThrows(IllegalArgumentException.class, () -> new WebsiteLayout().showRouterLayoutContent(contentMock));
         assertEquals("The content must contain at least one child", exception.getMessage());
     }
 }

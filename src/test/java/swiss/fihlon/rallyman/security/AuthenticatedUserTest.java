@@ -46,11 +46,11 @@ class AuthenticatedUserTest {
             final var securityContext = new SecurityContextImpl(authenticationToken);
             SecurityContextHolder.setContext(securityContext);
 
-            final var databaseService = mock(DatabaseService.class);
-            final var authenticatedUser = new AuthenticatedUser(databaseService);
+            final var databaseServiceMock = mock(DatabaseService.class);
+            final var authenticatedUser = new AuthenticatedUser(databaseServiceMock);
             final var userData = authenticatedUser.get();
 
-            verifyNoInteractions(databaseService);
+            verifyNoInteractions(databaseServiceMock);
             assertTrue(userData.isEmpty());
         }
         finally {
