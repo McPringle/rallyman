@@ -34,6 +34,7 @@ public class LoginView extends VerticalLayout {
 
         final var login = new LoginForm();
         login.setAction("login");
+        login.setForgotPasswordButtonVisible(false);
 
         add(new H1("RallyMan"), login);
     }
