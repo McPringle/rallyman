@@ -20,8 +20,10 @@ package swiss.fihlon.rallyman.ui.view;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.jetbrains.annotations.NotNull;
+import swiss.fihlon.rallyman.security.AuthenticatedUser;
 import swiss.fihlon.rallyman.service.DatabaseService;
 import swiss.fihlon.rallyman.ui.component.EventOverview;
 
@@ -29,9 +31,18 @@ import swiss.fihlon.rallyman.ui.component.EventOverview;
 @Route(value = "", layout = WebsiteLayout.class)
 public final class HomeView extends Div {
 
-    public HomeView(final @NotNull DatabaseService databaseService) {
+    public HomeView(final @NotNull DatabaseService databaseService,
+                    final @NotNull AuthenticatedUser authenticatedUser) {
         addClassName("home-view");
         add(new H1("Welcome to RallyMan"));
+
+        if (authenticatedUser.isLoggedIn()) {
+            add(new RouterLink("Logout", LogoutView.class));
+        } else {
+            add(new RouterLink("Login", LoginView.class));
+            add(new RouterLink("Register", LoginView.class));
+        }
+
         add(new EventOverview(databaseService));
     }
 

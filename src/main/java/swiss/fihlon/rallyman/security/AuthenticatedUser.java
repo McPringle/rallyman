@@ -64,4 +64,8 @@ public final class AuthenticatedUser {
         logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(), null, null);
     }
 
+    public boolean isLoggedIn() {
+        return getAuthentication().isPresent();
+    }
+
 }
