@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-build:
+  check-latest-build:
     runs-on: ubuntu-latest
     name: Check latest build
 
@@ -41,11 +41,11 @@ jobs:
             echo "defined=false" >> $GITHUB_OUTPUT;
           fi
 
-  build-publish:
-    if: needs.check-build.outputs.last-build-sha != github.sha && needs.check-secrets.outputs.defined == 'true'
+  docker-nightly:
+    if: needs.check-latest-build.outputs.last-build-sha != github.sha && needs.check-secrets.outputs.defined == 'true'
     runs-on: ubuntu-latest
     name: Build and push Docker image
-    needs: [check-build, check-secrets]
+    needs: [check-latest-build, check-secrets]
 
     steps:
       - name: Check out the repo
