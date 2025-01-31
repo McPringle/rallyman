@@ -21,6 +21,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.login.LoginForm;
 import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -35,6 +36,7 @@ import swiss.fihlon.rallyman.security.LoginAttemptService;
 import swiss.fihlon.rallyman.service.DatabaseService;
 import swiss.fihlon.rallyman.ui.KaribuTest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.github.mvysny.kaributesting.v10.LocatorJ._assertOne;
@@ -46,6 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static swiss.fihlon.rallyman.data.db.Tables.USER;
 
 class LoginIT extends KaribuTest {
 
@@ -54,6 +57,14 @@ class LoginIT extends KaribuTest {
 
     @Autowired
     private LoginAttemptService loginAttemptService;
+
+    @BeforeEach
+    void beforeEach() {
+        databaseService.dsl().update(USER)
+                .set(USER.LAST_LOGIN, (LocalDateTime) null)
+                .where(USER.EMAIL.eq(TestUser.EMAIL))
+                .execute();
+    }
 
     @Test
     void loginAndLogout() {
@@ -94,6 +105,7 @@ class LoginIT extends KaribuTest {
         final var ip = "127.0.0.1";
 
         final var authenticationMock = mock(Authentication.class);
+        when(authenticationMock.getName()).thenReturn(TestUser.EMAIL);
         final var requestMock = mock(HttpServletRequest.class);
         when(requestMock.getRemoteAddr()).thenReturn(ip);
 
@@ -103,15 +115,19 @@ class LoginIT extends KaribuTest {
         final var successEvent = new AuthenticationSuccessEvent(authenticationMock);
         final var successListener = new AuthenticationSuccessEventListener(requestMock, loginAttemptService, databaseService);
 
-        assertFalse(loginAttemptService.isBlocked(ip));
+        assertFalse(loginAttemptService.isBlocked(ip));   // ok
         failureListener.onApplicationEvent(failureEvent); // 1st login fail
         assertFalse(loginAttemptService.isBlocked(ip));   // ok
+        assertNull(databaseService.getUserByEmail(TestUser.EMAIL).orElseThrow().lastLogin());
         failureListener.onApplicationEvent(failureEvent); // 2nd login fail
         assertFalse(loginAttemptService.isBlocked(ip));   // ok
+        assertNull(databaseService.getUserByEmail(TestUser.EMAIL).orElseThrow().lastLogin());
         failureListener.onApplicationEvent(failureEvent); // 3rd login fail
         assertTrue(loginAttemptService.isBlocked(ip));    // blocked
+        assertNull(databaseService.getUserByEmail(TestUser.EMAIL).orElseThrow().lastLogin());
         successListener.onApplicationEvent(successEvent); // login success
         assertFalse(loginAttemptService.isBlocked(ip));   // ok
+        assertNotNull(databaseService.getUserByEmail(TestUser.EMAIL).orElseThrow().lastLogin());
     }
 
 }
